@@ -1,0 +1,22 @@
+---
+title: "Послѣ́дованїе"
+subtitle: "ко ст҃о́мꙋ причаще́нїю."
+layout: work.njk
+navigation:
+  key: prayers-communion
+  title: "Ко причаще́нїю"
+  parent: prayers
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.prayerParts %}
+  {% if part.inputPath.includes('/prayers/communion/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

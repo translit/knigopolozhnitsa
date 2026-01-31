@@ -1,0 +1,22 @@
+---
+title: "Трехканонник"
+subtitle: "«Лаврский»."
+layout: work.njk
+navigation:
+  key: canons-threelavra
+  title: "Трехканонник «Лаврский»"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/threelavra/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Кни́га пра́вилъ"
+subtitle: "свѧты́хъ а҆по́столѡвъ, свѧты́хъ собо́рѡвъ вселе́нскихъ и҆ помѣ́стныхъ, и҆ свѧты́хъ ѻ҆тє́цъ."
+layout: work.njk
+navigation:
+  key: various-rules
+  title: "Пра́вила а҆по́столѡвъ, собо́рѡвъ, и҆ свѧты́хъ ѻ҆тє́цъ"
+  parent: various
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.variousParts %}
+  {% if part.inputPath.includes('/various/rules/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Канѡ́нъ ѹ҆мили́тельный"
+subtitle: "со а҆ка́ѳїстомъ ко гдⷭ҇ꙋ на́шемꙋ і҆и҃сꙋ хрⷭ҇тꙋ̀."
+layout: work.njk
+navigation:
+  key: canons-tender
+  title: "І҆и҃сꙋ сладча́йшемꙋ"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/tender/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

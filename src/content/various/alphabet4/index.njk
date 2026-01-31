@@ -1,0 +1,22 @@
+---
+title: "А҆лфави́тъ дꙋхо́вный,"
+subtitle: "стїхослѡ́вїа."
+layout: work.njk
+navigation:
+  key: various-alphabet4
+  title: "А҆лфави́тъ дꙋхо́вный, стїхослѡ́вїа"
+  parent: various
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.variousParts %}
+  {% if part.inputPath.includes('/various/alphabet4/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

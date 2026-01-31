@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+_site/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+**/.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# Temporary files
+*.tmp
+*.swp
+
+# Documents
+*.epub
+*.pdf
+
+# Exclude root-level processing scripts and scratch files
+/*.js
+!.eleventy.js
+/*.txt
+deploy.sh
+CLAUDE.md
+.claude/

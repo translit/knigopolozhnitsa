@@ -1,0 +1,21 @@
+{% extends "_base.njk" %}
+
+{% set bodyClass = "church-slavonic work" %}
+
+{% block content %}
+{% if illustration %}
+  {% illustration illustration, illustrationSize %}
+{% endif %}
+<h1>
+  {% if subtitle %}
+    <span class="title-main">{{ title | safe }}</span>
+    <span class="title-subtitle">{{ subtitle | safe }}</span>
+  {% else %}
+    {{ title | safe }}
+  {% endif %}
+</h1>
+
+<nav class="work-chapters">
+    {{ content | safe }}
+</nav>
+{% endblock %}

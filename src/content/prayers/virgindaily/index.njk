@@ -1,0 +1,22 @@
+---
+title: "Мл҃твы бцⷣе"
+subtitle: "всеѧ́ седми́цы."
+layout: work.njk
+navigation:
+  key: prayers-virgindaily
+  title: "Мл҃твы бцⷣе всеѧ́ седми́цы"
+  parent: prayers
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.prayerParts %}
+  {% if part.inputPath.includes('/prayers/virgindaily/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

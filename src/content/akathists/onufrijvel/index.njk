@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Онуфрию Великому."
+layout: work.njk
+navigation:
+  key: akathists-onufrijvel
+  title: "Акафист Онуфрию Великому"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/onufrijvel/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

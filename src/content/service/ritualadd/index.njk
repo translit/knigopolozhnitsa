@@ -1,0 +1,22 @@
+---
+title: "Тре́бникъ"
+subtitle: "дополне́нїѧ."
+layout: work.njk
+navigation:
+  key: service-ritualadd
+  title: "Тре́бникъ, дополне́нїѧ"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/ritualadd/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Тропарѝ,"
+subtitle: "кондакѝ, задосто́йники и҆ велича̑нїѧ пра́здникѡмъ."
+layout: work.njk
+navigation:
+  key: service-troparia12
+  title: "Тропарѝ, кондакѝ, задосто́йники и҆ велича̑нїѧ пра́здникѡмъ"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/troparia12/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Макарию Желтоводскому."
+layout: work.njk
+navigation:
+  key: akathists-makarijzhelt
+  title: "Акафист Макарию Желтоводскому"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/makarijzhelt/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,9 @@
+{% extends "_base.njk" %}
+
+{% set bodyClass = "church-slavonic chapter" %}
+
+{% block content %}
+<article class="liturgical-text">
+    {{ content | safe }}
+</article>
+{% endblock %}

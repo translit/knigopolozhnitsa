@@ -1,0 +1,22 @@
+---
+title: "Добротолю́бїе,"
+subtitle: "ча́сть д҃."
+layout: work.njk
+navigation:
+  key: various-filokalia4
+  title: "Добротолю́бїе, ча́сть д҃"
+  parent: various
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.variousParts %}
+  {% if part.inputPath.includes('/various/filokalia4/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

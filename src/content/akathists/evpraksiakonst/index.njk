@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Евпраксии Константино­польской."
+layout: work.njk
+navigation:
+  key: akathists-evpraksiakonst
+  title: "Акафист Евпраксии Константино­польской"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/evpraksiakonst/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

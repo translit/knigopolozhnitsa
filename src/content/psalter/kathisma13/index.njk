@@ -1,0 +1,21 @@
+---
+title: "Каѳі́сма г҃і."
+layout: work.njk
+navigation:
+  key: psalter-kathisma13
+  title: "Каѳі́сма г҃і"
+  parent: psalter
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.psalterParts %}
+  {% if part.inputPath.includes('/psalter/kathisma13/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Евфросинии Суздальской."
+layout: work.njk
+navigation:
+  key: akathists-evfrosiniasuzd
+  title: "Акафист Евфросинии Суздальской"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/evfrosiniasuzd/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

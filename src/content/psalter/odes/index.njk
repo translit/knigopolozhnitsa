@@ -1,0 +1,22 @@
+---
+title: "Пѣ́сни"
+subtitle: "свѧще́ннагѡ писа́ніѧ."
+layout: work.njk
+navigation:
+  key: psalter-odes
+  title: "Пѣ́сни свѧще́ннагѡ писа́ніѧ"
+  parent: psalter
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.psalterParts %}
+  {% if part.inputPath.includes('/psalter/odes/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

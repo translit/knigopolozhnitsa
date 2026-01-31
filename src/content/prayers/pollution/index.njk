@@ -1,0 +1,22 @@
+---
+title: "Пра́вило"
+subtitle: "ѿ ѡ҆скверне́нїѧ."
+layout: work.njk
+navigation:
+  key: prayers-pollution
+  title: "Пра́вило ѿ ѡ҆скверне́нїѧ"
+  parent: prayers
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.prayerParts %}
+  {% if part.inputPath.includes('/prayers/pollution/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

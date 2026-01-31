@@ -1,0 +1,21 @@
+---
+title: "Канон Паисию Великому."
+layout: work.njk
+navigation:
+  key: canons-paisijgreat
+  title: "Канон Паисию Великому"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/paisijgreat/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

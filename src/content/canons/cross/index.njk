@@ -1,0 +1,22 @@
+---
+title: "Канѡ́нъ"
+subtitle: "чтⷭ҇но́мꙋ и҆ животворѧ́щемꙋ крⷭ҇тꙋ̀ хрⷭ҇то́вꙋ."
+layout: work.njk
+navigation:
+  key: canons-cross
+  title: "Канѡ́нъ крⷭ҇тꙋ̀ хрⷭ҇то́вꙋ"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/cross/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,23 @@
+---
+title: "Акафист"
+subtitle: "иконе «Знамение» (Абалацкая)."
+layout: work.njk
+navigation:
+  key: akathists-abalatsk
+  title: "Знамение (Абалацкая)"
+  parent: akathists
+  order: 1
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/abalatsk/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

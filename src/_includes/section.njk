@@ -1,0 +1,32 @@
+{% extends "_base.njk" %}
+
+{% set bodyClass = "section" %}
+
+{% block content %}
+{% if illustration %}
+  {% illustration illustration, illustrationSize %}
+{% endif %}
+<h1>
+  {% if subtitle %}
+    <span class="title-main">{{ title | safe }}</span>
+    <span class="title-subtitle">{{ subtitle | safe }}</span>
+  {% else %}
+    {{ title | safe }}
+  {% endif %}
+</h1>
+
+{% if showJulianDate %}
+<div id="julian-date"></div>
+{% endif %}
+{% if showTone %}
+<div id="current-tone"></div>
+{% endif %}
+
+<nav class="section-nav">
+    {{ content | safe }}
+</nav>
+
+{% if showJulianDate or showTone %}
+<script src="/assets/js/julian-date.js"></script>
+{% endif %}
+{% endblock %}

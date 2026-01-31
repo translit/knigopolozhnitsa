@@ -1,0 +1,22 @@
+---
+title: "Канѡ́нъ"
+subtitle: "за є҆диноѹ҆ме́ршаго."
+layout: work.njk
+navigation:
+  key: canons-deceasedman
+  title: "Канѡ́нъ за є҆диноѹ҆ме́ршаго"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/deceasedman/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

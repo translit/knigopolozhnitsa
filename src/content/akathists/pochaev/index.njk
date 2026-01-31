@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "иконе «Почаевская»."
+layout: work.njk
+navigation:
+  key: akathists-pochaev
+  title: "Акафист иконе «Почаевская»"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/pochaev/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

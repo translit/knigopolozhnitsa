@@ -1,0 +1,22 @@
+---
+title: "Тѷпїко́нъ,"
+subtitle: "си́рѣчь,<br> и҆з̾ѡбраже́нїе цр҃ко́внагѡ послѣ́дованїѧ во і҆ерⷭ҇ли́мѣ ст҃ы́ѧ ла́ѵры, прпⷣбнагѡ и҆ бг҃оно́снагѡ ѻ҆тца̀ на́шегѡ са́ввы."
+layout: work.njk
+navigation:
+  key: service-typikon
+  title: "Тѷпїко́нъ"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/typikon/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

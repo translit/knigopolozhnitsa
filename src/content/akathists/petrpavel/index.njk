@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Петру и Павлу."
+layout: work.njk
+navigation:
+  key: akathists-petrpavel
+  title: "Акафист Петру и Павлу"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/petrpavel/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

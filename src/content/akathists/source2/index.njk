@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "иконе «Живоносный Источник» (иной)."
+layout: work.njk
+navigation:
+  key: akathists-source2
+  title: "Акафист иконе «Живоносный Источник» (иной)"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/source2/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

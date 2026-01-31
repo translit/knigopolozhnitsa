@@ -1,0 +1,22 @@
+---
+title: "И҆рмоло́гїй"
+subtitle: "съ бг҃омъ ст҃ы́мъ, ѡ҆бдержа́й всѧ̑ і҆рмосы̀ ѻ҆смогла́сника, влⷣчнихъ же и҆ бг҃омт҃ре пра́здникѡвъ, и҆ всегѡ́ лѣ́та."
+layout: work.njk
+navigation:
+  key: service-irmologion
+  title: "И҆рмоло́гїй"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/irmologion/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,22 @@
+---
+title: "Мине́ѧ"
+subtitle: "і҆анꙋа́рій."
+layout: work.njk
+navigation:
+  key: service-menaionjan
+  title: "Мине́ѧ"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/menaionjan/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

@@ -1,0 +1,60 @@
+---
+title: "Ѻ҆ктѡ́ихъ,"
+subtitle: "гла́сы а҃-д҃."
+layout: work.njk
+navigation:
+  key: service-octoechos14
+  title: "Ѻ҆ктѡ́ихъ, гла́сы а҃-д҃"
+  parent: service
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/octoechos14/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+{% set sortedParts = unsortedParts | sortByNumber %}
+
+<div class="work-toc">
+{fold-toc:Гла́съ а҃}
+<ul>
+{% for part in sortedParts %}
+  {% if loop.index >= 1 and loop.index <= 7 %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>
+{/fold}
+
+{fold-toc:Гла́съ в҃}
+<ul>
+{% for part in sortedParts %}
+  {% if loop.index >= 8 and loop.index <= 14 %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>
+{/fold}
+
+{fold-toc:Гла́съ г҃}
+<ul>
+{% for part in sortedParts %}
+  {% if loop.index >= 15 and loop.index <= 21 %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>
+{/fold}
+
+{fold-toc:Гла́съ д҃}
+<ul>
+{% for part in sortedParts %}
+  {% if loop.index >= 22 and loop.index <= 28 %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% endif %}
+{% endfor %}
+</ul>
+{/fold}
+</div>

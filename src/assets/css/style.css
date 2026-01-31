@@ -1,0 +1,989 @@
+/* ==========================================================================
+   LITURGICAL LIBRARY STYLESHEET
+   Complete CSS for Church Slavonic liturgical texts with versals
+   ========================================================================== */
+
+/* ==========================================================================
+   FONT DECLARATIONS
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Triodion';
+  src: url('/assets/fonts/Triodion-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Vertograd';
+  src: url('/assets/fonts/Vertograd-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oglavie';
+  src: url('/assets/fonts/Oglavie-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ==========================================================================
+   CSS CUSTOM PROPERTIES (THEME VARIABLES)
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --bg-color: #fbf5ea;
+  --text-color: #1a1a1a;
+  --red-color: #cc0502;
+  --border-color: #e0e0e0;
+  --link-color: #0066cc;
+  --link-hover-color: #004499;
+
+  /* Fonts */
+  --triodion-font: 'Triodion', serif;
+  --oglavie-font: 'Oglavie', var(--triodion-font);
+  --vertograd-font: 'Vertograd', var(--triodion-font);
+  --system-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* Typography sizes */
+  --text-size-base: 1.75rem;
+  --text-size-medium: 1.6rem;
+  --text-size-small: 1.5rem;
+  --text-size-xsmall: 1.3rem;
+  --text-size-large: 3rem;
+  --versal-size: 3.85em;
+  --versal-margin-top: 0.08em;
+  --versal-diacritic-padding: 0.5em;
+  --versal-diacritic-margin: 0.75rem;
+  --versal-margin-left: -0.5rem;
+
+  /* Spacing */
+  --spacing-base: 1.5rem;
+  --spacing-small: 1rem;
+  --spacing-large: 2rem;
+
+  /* Illustration sizes */
+  --illustration-size-xsmall: 2rem;
+  --illustration-size-small: 3rem;
+  --illustration-size-medium: 4.5rem;
+  --illustration-size-large: 6.75rem;
+  --illustration-size-xlarge: 10.125rem;
+
+  /* Line heights */
+  --line-height-tight: 1.3;
+  --line-height-base: 1.6;
+  --line-height-loose: 1.7;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #000000;
+    --text-color: #e8e8e8;
+    --border-color: #333333;
+    --link-color: #66b3ff;
+    --link-hover-color: #99ccff;
+  }
+}
+
+/* ==========================================================================
+   FONT RENDERING OPTIMIZATION
+   ========================================================================== */
+
+body,
+h1, h2,
+p,
+rubric,
+versal {
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+}
+
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+
+body {
+  font-family: var(--system-font);
+  font-size: 24px;
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+main {
+  margin: 0;
+}
+
+/* ==========================================================================
+   SIMPLIFIED HEADING & NAVIGATION SYSTEM
+   ========================================================================== */
+
+/* Page titles - decorative Oglavie font */
+.homepage > main > h1,
+.section > main > h1,
+.work > main > h1 {
+  font-family: var(--oglavie-font);
+  font-size: var(--text-size-large);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  letter-spacing: 0.03em;
+  color: var(--red-color);
+  text-align: center;
+  margin: var(--spacing-base) 0;
+}
+
+/* Page title parts - for pages with subtitle */
+.homepage > main > h1 .title-main,
+.section > main > h1 .title-main,
+.work > main > h1 .title-main {
+  font-family: var(--oglavie-font);
+  font-size: var(--text-size-large);
+  display: block;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.03em;
+}
+
+.homepage > main > h1 .title-subtitle,
+.section > main > h1 .title-subtitle,
+.work > main > h1 .title-subtitle {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  display: block;
+  letter-spacing: normal;
+}
+
+/* Liturgical content headings - these stay as-is */
+article.liturgical-text h1,
+.chapter h1 {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  color: var(--red-color);
+  text-align: center;
+  margin: var(--spacing-base) 0;
+}
+
+article.liturgical-text h2,
+.chapter h2 {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  color: var(--red-color);
+  text-align: center;
+  margin: var(--spacing-large) 0 var(--spacing-small) 0;
+}
+
+/* ==========================================================================
+   NAVIGATION LISTS (NEW TOC STYLING)
+   ========================================================================== */
+
+/* Remove default list styling */
+.homepage nav ul,
+.section nav ul,
+.work-toc {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Homepage main navigation - base size */
+.homepage nav li {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  text-align: center;
+  margin: var(--spacing-base) 0;
+}
+
+/* Section navigation - base size */
+.section nav li {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  text-align: center;
+  margin: var(--spacing-base) 0;
+}
+
+/* Work-level TOC - base size */
+.work-toc li {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  text-align: center;
+  margin: var(--spacing-large) 0 var(--spacing-small) 0;
+}
+
+/* Navigation link styling - use default link colors */
+.homepage nav a,
+.section nav a,
+.work-toc a {
+  color: var(--link-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-feature-settings: inherit;
+}
+
+.homepage nav a:hover,
+.section nav a:hover,
+.work-toc a:hover {
+  color: var(--link-hover-color);
+  border-bottom-color: var(--link-hover-color);
+}
+
+/* ==========================================================================
+   PARAGRAPH STYLES
+   ========================================================================== */
+
+p {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-base);
+  margin: var(--spacing-base) 0;
+  text-align: left;
+}
+
+/* ==========================================================================
+   VERSALS (DROP CAPS)
+   ========================================================================== */
+
+versal {
+  display: block;
+  float: left;
+  font-family: var(--vertograd-font);
+  font-size: var(--versal-size);
+  line-height: 1;
+  margin-right: 0.08em;
+  margin-left: var(--versal-margin-left);
+  margin-top: var(--versal-margin-top);
+  color: var(--red-color);
+  font-weight: normal;
+}
+
+/* Contain floated versals (flow-root contains floats without clipping) */
+p:has(versal),
+.versal-paragraph {
+  display: flow-root;
+}
+
+/* Versals with diacritics need room above to prevent clipping */
+p:has(versal[data-diacritics="true"]) {
+  overflow: visible;
+  padding-top: var(--versal-diacritic-padding);
+  margin-top: var(--versal-diacritic-margin);
+}
+
+/* Optical compensation: the extra padding-top creates visual imbalance
+   (eye measures from letter body, not diacritics). Reduce preceding margins. */
+p:has(+ p versal[data-diacritics="true"]),
+h2:has(+ p versal[data-diacritics="true"]),
+p:has(rubric):has(+ p versal[data-diacritics="true"]),
+details:has(+ p versal[data-diacritics="true"]),
+details:has(> p versal[data-diacritics="true"]) > summary {
+  margin-bottom: var(--versal-diacritic-margin);
+}
+
+/* Hide empty paragraphs inside folds (artifacts from markdown/transform processing) */
+details > p:empty {
+  display: none;
+}
+
+/* Block rubrics have their own margins; zero them to allow optical compensation */
+p:has(rubric):has(+ p versal[data-diacritics="true"]) rubric {
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   LITURGICAL ELEMENTS
+   ========================================================================== */
+
+red {
+  color: var(--red-color);
+}
+
+/* Caesura - liturgical pause marks for chanting
+   Hidden by default for readers; preserved in source for singers.
+
+   To display caesuras as slashes, replace the rule below with:
+
+   caesura::before {
+     content: ' / ';
+     opacity: 0.4;
+     color: #888;
+   }
+*/
+caesura {
+  display: none;
+}
+
+rubric {
+  display: block;
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+  color: var(--red-color);
+  margin: var(--spacing-base) 0;
+  text-align: left;
+}
+
+rubric.inline {
+  display: inline;
+  margin: 0;
+}
+
+/* Liturgical text within rubrics */
+rubric .liturgical-text {
+  color: var(--text-color);
+}
+
+/* Incipit (opening words of liturgical texts) */
+incipit {
+  display: inline;
+  font-family: var(--triodion-font);
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* Incipit inside rubrics inherits rubric's font-size */
+rubric incipit {
+  font-size: inherit;
+}
+
+/* Acrostic (opening words of liturgical texts) - same as incipit */
+acrostic {
+  display: inline;
+  font-family: var(--triodion-font);
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+  margin: 0;
+}
+
+/* Acrostic inside rubrics inherits rubric's font-size */
+rubric acrostic {
+  font-size: inherit;
+}
+
+/* Podoben (musical tone pattern indicators) */
+podoben {
+  display: inline;
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-xsmall);
+  line-height: var(--line-height-base);
+  color: var(--red-color);
+  margin: 0;
+}
+
+/* Inline podobens adjacent to rubrics should match rubric size */
+rubric.inline + podoben,
+podoben:has(+ rubric.inline) {
+  font-size: var(--text-size-small);
+}
+
+/* Refrain (liturgical text, same size as rubrics but black) */
+refrain {
+  display: inline;
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+}
+
+/* Ensure red tags inside refrains only affect their content */
+refrain red {
+  color: var(--red-color);
+  font-size: inherit;
+}
+
+/* Date markers (day numbers with titlo) - preserve default text color */
+date {
+  display: inline;
+  color: var(--text-color);
+}
+
+/* Feast symbols - preserve their existing color and size regardless of surrounding context */
+feast {
+  display: inline;
+  color: var(--text-color);
+}
+
+/* Irmos (liturgical text, same size as rubrics but black) */
+irmos {
+  display: inline;
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+}
+
+/* Ensure irmos inside paragraphs uses correct size */
+p > irmos,
+p irmos,
+irmos {
+  font-size: var(--text-size-small) !important;
+}
+
+/* Alternative: class-based styling for irmos */
+.irmos {
+  font-size: var(--text-size-small) !important;
+}
+
+/* Fix line-height for paragraphs containing small liturgical elements */
+p:has(irmos),
+p:has(refrain) {
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+}
+
+.liturgical-text {
+  transition: opacity 0.3s ease;
+}
+
+.liturgical-text.fading-out {
+  opacity: 0;
+}
+
+/* ==========================================================================
+   VERSE CONTAINER
+   ========================================================================== */
+
+.verse {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-base);
+  margin: var(--spacing-base) 0;
+}
+
+/* ==========================================================================
+   FOOTNOTES
+   ========================================================================== */
+
+.footnotes {
+  margin-top: var(--spacing-small);
+}
+
+.footnotes rubric {
+  display: inline;
+}
+
+/* All footnote paragraphs - wrapped and unwrapped */
+p[id^="fn"],
+.footnotes p {
+  font-size: var(--text-size-small);
+  margin: 0.25em 0;
+}
+
+/* Style footnote links */
+a[href^="#fn"],
+a[href^="#ref"] {
+  text-decoration: none;
+  border-bottom: none;
+  font-size: var(--text-size-xsmall);
+}
+
+/* ==========================================================================
+   DECORATIVE ELEMENTS
+   ========================================================================== */
+
+#julian-date,
+#current-tone {
+  text-align: center;
+  font-size: var(--text-size-small);
+  margin: var(--spacing-base) 0;
+  font-family: var(--triodion-font);
+  color: var(--red-color);
+}
+
+.homepage-cross {
+  text-align: center;
+  margin-bottom: var(--spacing-base);
+  margin-top: 0;
+  font-size: var(--text-size-base);
+  line-height: 1;
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-variant-emoji: text;
+}
+
+.toc-divider {
+  text-align: center;
+  margin: var(--spacing-small) 0;
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+}
+
+.toc-divider::before {
+  content: "※ ※ ※";
+}
+
+h2 + .toc-divider {
+  margin-top: var(--spacing-small);
+}
+
+.toc-divider + h2 {
+  margin-top: var(--spacing-small);
+}
+
+.work-end-marker {
+  text-align: center;
+  margin: var(--spacing-base) 0;
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-large);
+}
+
+.work-end-marker::before {
+  content: "⁜";
+}
+
+/* SVG Illustrations */
+.illustration {
+  text-align: center;
+  margin: var(--spacing-base) 0;
+  color: var(--red-color);
+}
+
+/* Optical compensation: reduce gap when h1 follows illustration
+   to account for diacritical marks extending above letter bodies */
+.homepage .illustration:has(+ h1),
+.section .illustration:has(+ h1),
+.work .illustration:has(+ h1) {
+  margin-bottom: 0;
+}
+
+.homepage .illustration + h1,
+.section .illustration + h1,
+.work .illustration + h1 {
+  margin-top: calc(var(--spacing-base) - 0.2em);
+}
+
+.illustration svg {
+  max-width: 100%;
+  height: auto;
+  fill: currentColor;
+}
+
+.illustration-xsmall svg {
+  max-width: var(--illustration-size-xsmall);
+}
+
+.illustration-small svg {
+  max-width: var(--illustration-size-small);
+}
+
+.illustration-medium svg {
+  max-width: var(--illustration-size-medium);
+}
+
+.illustration-large svg {
+  max-width: var(--illustration-size-large);
+}
+
+.illustration-xlarge svg {
+  max-width: var(--illustration-size-xlarge);
+}
+
+/* Responsive illustration sizing - full width on mobile, limited on larger screens */
+@media (min-width: 768px) {
+  .illustration:not([class*="illustration-"]) svg {
+    max-width: 25rem;
+  }
+}
+
+/* ==========================================================================
+   LINKS
+   ========================================================================== */
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--link-hover-color);
+  border-bottom-color: var(--link-hover-color);
+}
+
+/* Inherit font for specific link contexts */
+p a,
+rubric a,
+.breadcrumb a,
+.nav-breadcrumb a {
+  font-family: inherit;
+  font-feature-settings: inherit;
+}
+
+/* ==========================================================================
+   NAVIGATION
+   ========================================================================== */
+
+/* Breadcrumb navigation */
+.breadcrumb,
+.nav-breadcrumb {
+  font-family: var(--triodion-font);
+  font-feature-settings: inherit;
+  font-size: var(--text-size-xsmall);
+  margin-bottom: var(--spacing-base);
+  margin-top: 0;
+}
+
+/* Chapter and TOC navigation containers */
+.chapter-navigation,
+.toc-navigation {
+  margin-top: var(--spacing-base);
+  margin-bottom: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+}
+
+.nav-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  transition: all 0.2s ease;
+  font-family: var(--system-font);
+  font-size: 1rem;
+  min-height: 28px;
+  cursor: pointer;
+  width: 2rem;
+  height: 1.75rem;
+}
+
+.nav-button:hover:not(.nav-disabled) {
+  background-color: var(--link-color);
+  color: white;
+  border-color: var(--link-color);
+  transform: translateY(-1px);
+}
+
+.nav-button:focus:not(.nav-disabled) {
+  outline: 2px solid var(--link-color);
+  outline-offset: 2px;
+}
+
+.nav-button.nav-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+/* ==========================================================================
+   FOLD SUMMARY STYLING
+   Styles for <summary> elements in fold sections with smooth content animation
+   ========================================================================== */
+
+/* Base summary styling - removes default browser styles */
+details summary {
+  cursor: pointer;
+  outline: none;
+  list-style: none;
+  margin: 0;
+}
+
+/* Remove default disclosure triangle */
+details summary::-webkit-details-marker {
+  display: none;
+}
+
+details summary::marker {
+  content: "";
+}
+
+/* Summary text styling classes - separate triangle and text */
+.summary-red {
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-tight);
+}
+
+.summary-rubric {
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-tight);
+}
+
+.summary-h1 {
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-tight);
+  font-weight: normal;
+}
+
+.summary-h2 {
+  color: var(--red-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-tight);
+  font-weight: normal;
+}
+
+.summary-default {
+  color: var(--text-color);
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  line-height: var(--line-height-tight);
+}
+
+/* Alignment for different summary types */
+summary:has(.summary-h1),
+summary:has(.summary-h2) {
+  text-align: center;
+}
+
+summary:has(.summary-red),
+summary:has(.summary-rubric),
+summary:has(.summary-default) {
+  text-align: left;
+}
+
+/* TOC-specific fold summary styling */
+.summary-toc {
+  color: var(--link-color);
+}
+
+/* Triangle color override for TOC folds - simplified selector */
+.work-toc details .triangle {
+  color: var(--link-color);
+}
+
+/* Remove bullets from lists inside TOC folds */
+.work-toc details ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Consistent spacing for TOC folds - match .work-toc li exactly */
+.work-toc details {
+  margin: var(--spacing-large) 0 var(--spacing-small) 0;
+  padding: 0;
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-base);
+  font-weight: normal;
+  line-height: var(--line-height-tight);
+  text-align: center;
+}
+
+.work-toc details summary {
+  display: block;
+  color: var(--link-color);
+  padding: 0;
+  margin: 0;
+}
+
+/* Triangle styling - separate element */
+.triangle {
+  color: var(--red-color);
+  font-family: var(--system-font);
+  font-size: 0.8em;
+  margin-right: 0.5em;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+/* Rotate triangle when details are open - use direct child selector */
+details[open] > summary > .triangle {
+  transform: rotate(90deg);
+}
+
+/* Fold end marker - appears at bottom of long folds */
+.fold-end-marker {
+  color: var(--red-color);
+  font-family: var(--system-font);
+  font-size: 0.8em;
+  text-align: center;
+  margin: 1em 0;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+  display: block;
+}
+
+.fold-end-marker:hover {
+  opacity: 0.7;
+}
+
+/* Hide marker when fold is closed */
+details:not([open]) .fold-end-marker {
+  display: none;
+}
+
+/* ==========================================================================
+   SMOOTH CONTENT ANIMATION
+   ========================================================================== */
+
+/* Base details styling - minimal interference with normal document flow */
+details {
+  margin: 1em 0;
+}
+
+/* Content container for animation */
+details > *:not(summary) {
+  animation: fold-close 0.3s ease forwards;
+}
+
+/* Opening animation */
+details[open] > *:not(summary) {
+  animation: fold-open 0.3s ease forwards;
+}
+
+/* Keyframe animations */
+@keyframes fold-open {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fold-close {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Ensure smooth transitions with reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .summary-red::before,
+  .summary-rubric::before,
+  .summary-h1::before,
+  .summary-h2::before,
+  .summary-default::before {
+    transition: none;
+  }
+
+  details > *:not(summary) {
+    animation: none;
+  }
+
+  /* Simple fade for reduced motion */
+  details[open] > *:not(summary) {
+    opacity: 1;
+  }
+
+  details:not([open]) > *:not(summary) {
+    opacity: 0.7;
+  }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVENESS
+   ========================================================================== */
+
+@media (max-width: 834px) {
+  :root {
+    /* Adjust sizes for mobile */
+    --text-size-base: 2.2rem;
+    --text-size-medium: 2rem;
+    --text-size-small: 1.9rem;
+    --text-size-xsmall: 1.65rem;
+    --text-size-large: 3.8rem;
+    --versal-size: 3.48em;
+    --versal-margin-top: 0.12em;
+    --versal-diacritic-padding: 0.4em;
+  }
+
+  body {
+    padding: 0.75rem;
+  }
+
+  /* Adjust margins for mobile */
+  .homepage > main > h1,
+  .section > main > h1,
+  .work > main > h1 {
+    margin: var(--spacing-base) 0 var(--spacing-small) 0;
+  }
+
+  .homepage > main > h1 .title-main,
+  .section > main > h1 .title-main,
+  .work > main > h1 .title-main {
+    margin-bottom: 0.25rem;
+  }
+
+  article.liturgical-text h1,
+  .chapter h1 {
+    margin: var(--spacing-base) 0 var(--spacing-small) 0;
+  }
+
+  article.liturgical-text h2,
+  .chapter h2 {
+    margin: var(--spacing-base) 0 0.75rem 0;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  /* Decorative elements */
+  .homepage-cross {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-small);
+  }
+
+  /* Note: decorative elements now use CSS variables and scale automatically */
+
+  .work-end-marker {
+    margin: var(--spacing-base) 0 var(--spacing-small) 0;
+  }
+
+  /* Navigation */
+  .nav-grid {
+    display: none;
+  }
+
+  .nav-breadcrumb {
+    margin-bottom: 0;
+  }
+
+  /* Mobile adjustments for fold summaries */
+  .summary-red,
+  .summary-h1,
+  .summary-default {
+    font-size: var(--text-size-base);
+  }
+
+  .summary-h2,
+  .summary-rubric {
+    font-size: var(--text-size-small);
+  }
+
+  /* Faster animation on mobile */
+  details > *:not(summary) {
+    animation-duration: 0.3s;
+  }
+}

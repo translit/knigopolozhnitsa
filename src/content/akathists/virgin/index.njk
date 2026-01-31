@@ -1,0 +1,22 @@
+---
+title: "А҆ка́ѳїстъ"
+subtitle: "пребл҃гослове́ннѣй влⷣчцѣ на́шей бцⷣе и҆ приснодв҃ѣ мр҃і́и."
+layout: work.njk
+navigation:
+  key: akathists-virgin
+  title: "А҆ка́ѳїстъ прест҃ѣ́й бцⷣѣ"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/virgin/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

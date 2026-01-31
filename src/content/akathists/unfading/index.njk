@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "иконе «Неувядаемый Цвет»."
+layout: work.njk
+navigation:
+  key: akathists-unfading
+  title: "Акафист иконе «Неувядаемый Цвет»"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/unfading/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

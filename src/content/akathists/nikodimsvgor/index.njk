@@ -1,0 +1,22 @@
+---
+title: "Акафист"
+subtitle: "Никодиму Святогорцу."
+layout: work.njk
+navigation:
+  key: akathists-nikodimsvgor
+  title: "Акафист Никодиму Святогорцу"
+  parent: akathists
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.akathistParts %}
+  {% if part.inputPath.includes('/akathists/nikodimsvgor/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>

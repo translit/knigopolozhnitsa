@@ -1,0 +1,22 @@
+---
+title: "Канѡ́нъ моле́бный"
+subtitle: "храни́телю человѣ́ческїѧ жи́зни а҆́гг҃лꙋ."
+layout: work.njk
+navigation:
+  key: canons-prayangel
+  title: "Канѡ́нъ моле́бный а҆́гг҃лꙋ храни́телю"
+  parent: canons
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.canonParts %}
+  {% if part.inputPath.includes('/canons/prayangel/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+{% endfor %}
+</ul>
