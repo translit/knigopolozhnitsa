@@ -37,31 +37,14 @@ npx @11ty/eleventy --serve
 
 This will start a local development server with live reload.
 
-## Features
-
-- **Church Slavonic Typography**: Custom fonts and proper handling of Church Slavonic Unicode characters with combining diacritical marks
-- **Transclusion System**: Reusable content with `transclude`, `transcludeSection`, and `transcludeLines` shortcodes
-- **Folding Sections**: Collapsible content sections for improved reading experience
-- **Illustrations**: SVG illustrations from the Orthodox Illustration Project
-- **Hierarchical Navigation**: Complex navigation system using frontmatter
-- **Offline Reading**: Designed to work fully offline once loaded
-
 ## Credits
 
-### Texts
-Texts compiled and prepared by Alexander Semeniuk (https://www.alexsem.org)
+Original texts provided by Alexander Semeniuk (https://www.alexsem.org)
 
-### Fonts
 Church Slavonic fonts provided by the [Ponomar Project](https://sci.ponomar.net/legal.html):
-- Triodion Regular
-- Vertograd Regular
-- Oglavie Regular
 
-### Illustrations
 SVG illustrations from the [Orthodox Illustration Project](https://drive.google.com/file/d/18Z7G2KTbCaC6rDZSqBFVl8yTkqVHOZdI/view?usp=sharing) (see license document for terms)
 
 ## License
 
 This work is licensed under a [Creative Commons Attribution 4.0 International License](LICENSE).
-
-Copyright Alexander Semeniuk, 2026.
