@@ -39,11 +39,11 @@ This will start a local development server with live reload.
 
 ## Credits
 
-Original texts provided by Alexander Semeniuk (https://www.alexsem.org)
+Original texts: [Alexander Semeniuk](https://www.alexsem.org).
 
-Church Slavonic fonts provided by the [Ponomar Project](https://sci.ponomar.net/legal.html):
+Church Slavonic fonts: [Ponomar Project](https://sci.ponomar.net).
 
-SVG illustrations from the [Orthodox Illustration Project](https://drive.google.com/file/d/18Z7G2KTbCaC6rDZSqBFVl8yTkqVHOZdI/view?usp=sharing) (see license document for terms)
+SVG illustrations: [Orthodox Illustration Project](https://orthodoxartsjournal.org/orthodox-illustration-project/).
 
 ## License
 
