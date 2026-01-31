@@ -1,12 +1,12 @@
-# Книгополо́жница (Knigopolozhnitsa)
+# Книгополо́жница
 
 A digital library of Church Slavonic liturgical texts, built as a static website using Eleventy (11ty).
 
 ## About
 
-Knigopolozhnitsa (Russian: Книгополо́жница, meaning "Book Repository") is a personal collection of Orthodox Christian liturgical texts in Church Slavonic, including akathists, canons, the psalter, prayers, and various liturgical services.
+Knigopolozhnitsa (Church Slavonic: Книгополо́жница, meaning "Book Repository") is a personal collection of Orthodox Christian liturgical texts in Church Slavonic, including akathists, canons, the Psalter, prayers, and various liturgical services.
 
-The site is designed for reading on Apple devices (Mac, iPhone, iPad) with full offline support and mobile-friendly layout.
+The site is optimised for reading on Apple devices (Mac, iPhone, iPad) with full offline support and mobile-friendly layout.
 
 ## Building the Site
 
