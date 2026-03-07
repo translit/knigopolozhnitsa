@@ -1,6 +1,6 @@
 ---
-title: "А҆ка́ѳїсты."
-illustration: "bars-headers-fullpage/bar16"
+title: "А҆ка́ѳїсты"
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: akathists
   title: "А҆ка́ѳїсты"

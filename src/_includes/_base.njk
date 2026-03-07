@@ -9,8 +9,11 @@
     <link rel="stylesheet" href="/assets/css/style.css">
     <meta name="color-scheme" content="light dark">
     <!-- Favicon -->
-    <link rel="icon" href="/assets/images/favicon.ico">
-    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+    <link rel="icon" href="/assets/images/icon.svg?v=2" type="image/svg+xml">
+    <link rel="icon" href="/assets/images/favicon.ico?v=2" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png?v=2">
+    <meta name="theme-color" content="#fbf5ea" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
     <!-- Add preload hints for navigation -->
     {% if navigation.key and layout != "single-work.njk" %}
     {% set chapterNav = collections.all | getChapterNavigation(navigation.key) %}

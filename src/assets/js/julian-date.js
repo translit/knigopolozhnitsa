@@ -129,6 +129,13 @@
   }
 
   /**
+   * Normalize a date to noon UTC to avoid DST-related day boundary issues
+   */
+  function toNoonUTC(d) {
+    return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 12);
+  }
+
+  /**
    * Calculate the current Octoechos tone (1-8)
    * Returns null during Bright Week (Pascha to Thomas Sunday)
    */
@@ -150,12 +157,15 @@
     thomasSunday.setDate(thomasSunday.getDate() + 7);
 
     // During Bright Week (Pascha to Thomas Sunday), return null
-    if (julianDate >= pascha && julianDate < thomasSunday) {
+    // Use normalized dates to avoid DST boundary issues
+    const daysDiffBrightWeek = Math.round((toNoonUTC(julianDate) - toNoonUTC(pascha)) / (1000 * 60 * 60 * 24));
+    if (daysDiffBrightWeek >= 0 && daysDiffBrightWeek < 7) {
       return null;
     }
 
     // Calculate weeks since Thomas Sunday
-    const daysDiff = Math.floor((julianDate - thomasSunday) / (1000 * 60 * 60 * 24));
+    // Use normalized dates to avoid DST boundary issues
+    const daysDiff = Math.round((toNoonUTC(julianDate) - toNoonUTC(thomasSunday)) / (1000 * 60 * 60 * 24));
     const weeksSinceThomasSunday = Math.floor(daysDiff / 7) + 1;
 
     // Calculate tone (1-8 cycle)

@@ -1,6 +1,6 @@
 ---
-title: "И҆́но."
-illustration: "bars-headers-fullpage/bar16"
+title: "И҆́но"
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: various
   title: "И҆́но"

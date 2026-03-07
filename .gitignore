@@ -27,11 +27,3 @@ Thumbs.db
 # Documents
 *.epub
 *.pdf
-
-# Exclude root-level processing scripts and scratch files
-/*.js
-!.eleventy.js
-/*.txt
-deploy.sh
-CLAUDE.md
-.claude/

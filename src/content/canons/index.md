@@ -1,6 +1,6 @@
 ---
-title: "Канѡ̑ны."
-illustration: "bars-headers-fullpage/bar16"
+title: "Канѡ̑ны"
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: canons
   title: "Канѡ̑ны"

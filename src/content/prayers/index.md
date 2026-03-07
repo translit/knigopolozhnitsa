@@ -1,6 +1,6 @@
 ---
-title: "Мл҃твы."
-illustration: "bars-headers-fullpage/bar16"
+title: "Мл҃твы"
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: prayers
   title: "Мл҃твы"

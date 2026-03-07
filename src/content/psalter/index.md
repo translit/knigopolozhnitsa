@@ -1,7 +1,7 @@
 ---
 title: "Ѱалти́рь,"
 subtitle: "дв҃да прⷪ҇ро́ка и҆ царѧ̀ пѣ́снь."
-illustration: "bars-headers-fullpage/bar16"
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: psalter
   title: "Ѱалти́рь"
@@ -46,6 +46,7 @@ navigation:
 
 - [Помѧ́нникъ](memorial/)
 - [Послѣ́дованїе по и҆схо́дѣ дꙋшѝ ѿ тѣ́ла](departure/)
+- [Ѡ҆ чте́нїи ѱалти́ри по ѹ҆со́пшымъ](deceased/)
 
 <div class="toc-divider"></div>
 
