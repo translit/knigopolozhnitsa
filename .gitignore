@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+package-lock.json
 
 # Build output
 _site/
@@ -17,7 +18,8 @@ Thumbs.db
 # Logs
 *.log
 
-# Environment variables
+# Claude Code
+.claude/
 .env
 
 # Temporary files

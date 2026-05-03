@@ -1,11 +1,17 @@
 ---
 title: "Лѣ́ствица"
-subtitle: "и҆́же во ст҃ы́хъ ѻ҆ц҃а̀ на́шегѡ і҆ѡа́нна."
+subtitle: "і҆́же во ст҃ы́хъ ѻ҆ц҃а̀ на́шегѡ і҆ѡа́нна."
 layout: work.njk
 navigation:
   key: various-lestvitsa
   title: "Лѣ́ствица"
   parent: various
+tocDividers:
+  - "9"
+  - "39"
+tocSections:
+  "40": "Сло́во къ па́стырю"
+source: Перевод прп. Паисия (Величковского), typikon.su + Самъиздатъ 2017. Текст набран по автографу прп. Паисия. Рукопись прп. Паисия разбита на главы в соответствии с русским переводом Оптиной пустыни.
 ---
 
 {% set unsortedParts = [] %}
@@ -17,6 +23,12 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

@@ -2,6 +2,16 @@
 title: "Трїѡ́дїонъ"
 subtitle: "сі́есть трипѣ́снецъ<br>съ бг҃мъ ст҃ы́мъ, ѡ҆бдержа́й подоба́ющее є҆мꙋ̀ послѣ́дованїе."
 layout: work.njk
+tocDividers:
+  - "3"
+  - "6"
+  - "13"
+  - "16"
+  - "19"
+  - "22"
+  - "25"
+  - "28"
+  - "35"
 navigation:
   key: service-lententriodion
   title: "Трїѡ́дь по́стнаѧ"
@@ -18,5 +28,8 @@ navigation:
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

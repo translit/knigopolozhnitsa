@@ -1,10 +1,48 @@
 class ChapterNavigation {
   constructor() {
+    this.initHashNavigation();
+    this.initAnchorLinkNavigation();
     this.initKeyboardNavigation();
     this.initChapterDropdown();
     this.initSwipeNavigation();
     this.initAccessibility();
     this.initFoldEndMarkers();
+  }
+
+  // On iOS Safari, <details> elements are not automatically opened when a
+  // URL fragment targets a descendant element. Open them explicitly.
+  initHashNavigation() {
+    if (!window.location.hash) return;
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (!target) return;
+    let el = target.parentElement;
+    while (el) {
+      if (el.tagName === 'DETAILS') el.open = true;
+      el = el.parentElement;
+    }
+    target.scrollIntoView({ block: 'start' });
+  }
+
+  // Handle clicks on in-page anchor links: open any <details> ancestors of the
+  // target before scrolling. Without this, tapping a #hash link on iOS Safari
+  // updates the URL but does not open a closed <details> fold, so nothing moves.
+  initAnchorLinkNavigation() {
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      const id = link.getAttribute('href').slice(1);
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      let el = target.parentElement;
+      while (el) {
+        if (el.tagName === 'DETAILS') el.open = true;
+        el = el.parentElement;
+      }
+      history.pushState(null, '', '#' + id);
+      target.scrollIntoView({ block: 'start' });
+    });
   }
 
   initKeyboardNavigation() {

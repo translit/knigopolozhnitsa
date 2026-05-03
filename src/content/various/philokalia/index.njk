@@ -1,0 +1,53 @@
+---
+title: "Добротолю́бїе,"
+subtitle: "и҆лѝ словеса̀ и҆ глави̑зны сщ҃е́ннагѡ трезвѣ́нїѧ.<br>Сѡ́бранныѧ ѿ писа́нїй ст҃ы́хъ и҆ бг҃одх҃нове́нныхъ ѻ҆тє́цъ, въ ни́мже нра́вственнымъ по дѣѧ́нїю, и҆ ѹ҆мозрѣ́нїю любомꙋ́дремъ ѹ҆́мъ ѡ҆чища́етсѧ, просвѣща́етсѧ и҆ соверше́нъ быва́етъ."
+layout: work.njk
+navigation:
+  key: various-philokalia
+  title: "Добротолю́бїе"
+  parent: various
+source: "Перево́дъ прпⷣбнагѡ Паисіа Величковскаго."
+tocSections:
+  "1-001": "Ча́сть пе́рваѧ"
+  "2-001": "Ча́сть втора́ѧ"
+  "3-001": "Ча́сть тре́тїѧ"
+  "4-001": "Ча́сть четве́ртаѧ"
+tocDividers:
+  - "1-002"
+  - "1-006"
+  - "1-010"
+  - "1-017"
+  - "2-002"
+  - "2-004"
+  - "2-006"
+  - "2-009"
+  - "2-012"
+  - "3-002"
+  - "4-003"
+  - "4-006"
+  - "4-008"
+  - "4-011"
+  - "4-013"
+  - "4-016"
+  - "4-018"
+  - "4-020"
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.variousParts %}
+  {% if part.inputPath.includes('/various/philokalia/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
+{% endfor %}
+</ul>

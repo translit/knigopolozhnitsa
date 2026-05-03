@@ -4,7 +4,7 @@ subtitle: "ст҃ы́ѧ па́схи."
 layout: work.njk
 navigation:
   key: canons-easter
-  title: "Канѡ́нъ и҆ стїхи̑ры ст҃ы́ѧ па́схи"
+  title: "Канѡ́нъ па́схи"
   parent: canons
 ---
 
@@ -18,5 +18,8 @@ navigation:
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

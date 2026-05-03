@@ -58,7 +58,7 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Ст҃о́е є҆ѵⷢ҇лїе](gospel/)
+- [Свѧще́нное е҆ѵа́нгелїе](gospel/)
 - [А҆по́столъ](apostle/)
 
 <div class="toc-divider"></div>

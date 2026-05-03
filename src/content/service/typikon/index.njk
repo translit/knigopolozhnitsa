@@ -6,6 +6,17 @@ navigation:
   key: service-typikon
   title: "Тѷпїко́нъ"
   parent: service
+tocDividers:
+  - "30"
+  - "46"
+  - "47"
+  - "59"
+  - "70"
+  - "79"
+tocSections:
+  "48": "м҃и. Мцⷭ҇есло́въ во ве́сь го́дъ съ тропарѝ и҆ кондакѝ, и҆ съ ма́рковыми глава́ми"
+  "60": "м҃ѳ. Ѡ҆ четыредесѧ́тницѣ"
+  "71": "н҃. Ѡ҆ пѧтидесѧ́тницѣ"
 ---
 
 {% set unsortedParts = [] %}
@@ -17,6 +28,12 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

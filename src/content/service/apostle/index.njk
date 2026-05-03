@@ -1,6 +1,15 @@
 ---
-title: "А҆по́столъ."
+title: "А҆по́столъ"
 layout: work.njk
+tocDividers:
+  - "2"
+  - "5"
+  - "12"
+  - "26"
+  - "27"
+  - "39"
+tocSections:
+  "28": "Собо́рникъ двꙋна́десѧти мѣ́сѧцей"
 navigation:
   key: service-apostle
   title: "А҆по́столъ"
@@ -16,6 +25,12 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

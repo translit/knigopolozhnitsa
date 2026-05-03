@@ -65,7 +65,7 @@ source: Канонник МП 2012 г.
 
 <incipit><red>Трист҃о́е.</red></incipit> <incipit><red>П</red>рест҃а́ѧ трⷪ҇це:</incipit> <rubric class="inline">И҆ по</rubric> <incipit><red>Ѻ҆</red>ч҃е на́шъ:</incipit>
 
-<rubric><a href="/service/horologionadd/2" target="_blank">Тропа́рь,</a> Сла́ва, и҆ ны́нѣ: <a href="/service/horologionadd/20" target="_blank">Бг҃оро́диченъ.</a></rubric>
+<rubric><a href="/service/horologion/18" target="_blank">Тропа́рь,</a> Сла́ва, и҆ ны́нѣ: Бг҃оро́диченъ.</rubric>
 
 <red>Г</red>дⷭ҇и, поми́лꙋй, <rubric class="inline">м҃.</rubric>
 

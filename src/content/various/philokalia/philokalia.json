@@ -1,0 +1,7 @@
+{
+  "layout": "chapter.njk",
+  "type": "various",
+  "navigation": {
+    "parent": "various-philokalia"
+  }
+}

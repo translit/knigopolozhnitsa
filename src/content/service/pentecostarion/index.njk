@@ -2,6 +2,18 @@
 title: "Пентикоста́рїонъ"
 subtitle: "сі́есть пѧтьдесѧ́тница<br>съ бг҃мъ ст҃ы́мъ, ѡ҆бдержа́й подоба́ющее є҆мꙋ̀ послѣ́дованїе."
 layout: work.njk
+tocDividers:
+  - "1"
+  - "6"
+  - "7"
+  - "9"
+  - "11"
+  - "14"
+  - "16"
+  - "20"
+  - "24"
+  - "26"
+  - "27"
 navigation:
   key: service-pentecostarion
   title: "Трїѡ́дь цвѣтна́ѧ"
@@ -18,5 +30,8 @@ navigation:
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>

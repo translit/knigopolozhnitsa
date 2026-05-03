@@ -350,48 +350,163 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addTransform("slavonicNumeralNoBreak", function(content, outputPath) {
     if (outputPath && outputPath.endsWith(".html")) {
       // Define the numeral pattern once
-      const numeralPattern = '[а-ѱѡц][҃҂]+[а-ѱѡц҃҂]*\\.?:?';
+      const numeralPattern = '[а-ѱѡцѳѻꙋ][҃҂]+[а-ѱѡцѳѻꙋ҃҂]*\\.?:?';
       const liturgicalTerms = [
         'а҆нтїфѡ́нъ',
+        'А҆мѡ́с\\.',
+        'Быт\\.',
+        'Втор\\.',
+        'Второз\\.',
+        'Второзак\\.',
+        'Галат\\.',
+        'гл\\.',
         'глава̀',
         'гла́съ',
+        'Дан\\.',
+        'Дѣѧ́н\\.',
+        'Є҆вр\\.',
+        'Є҆ккл\\.',
+        'Є҆фес\\.',
         'зача́ло',
+        'И҆сх\\.',
+        'і҆ѡа́н\\.',
+        'І҆а́к\\.',
+        'І҆езек\\.',
+        'І҆ерем\\.',
+        'І҆ис\\.',
+        'І҆исꙋ́с\\.',
+        'І҆ѡа́н\\.',
+        'І҆́ѡв\\.',
         'і҆́косъ',
         'каѳі́сма',
         'каѳі́смꙋ',
         'каѳі̑смы',
-        'ли́стъ',
+        'Колос\\.',
         'конда́къ',
+        'кор\\.',
+        'Леѵ\\.',
+        'ли́стъ',
+        'Лꙋк\\.',
+        'Ма́рк\\.',
+        'Матѳ\\.',
         'мета̑нїѧ',
+        'Мїх\\.',
         'мине́и',
         'Мч҃нчны',
         'мл҃тва',
         'на',
+        'Наꙋ́м\\.',
+        'Наꙋм\\.',
+        'петр\\.',
+        'Пла́ч\\.',
+        'При́тч\\.',
         'пѣ́снь',
+        'Пѣ́сн\\.',
         'покло́ны',
+        'Ри́м\\.',
+        'Рим\\.',
         'самогла́сны',
+        'Сїра́х\\.',
+        'сол\\.',
+        'Софо́н\\.',
         'ст\\.',
         'Сті́хъ',
         'стїхѡ́въ',
+        'ті́т\\.',
+        'тїм\\.',
+        'тїмоѳ\\.',
+        'Тїт\\.',
         'трипѣ́снца',
+        'Фїлїп\\.',
         'ча́съ',
+        'ча́сть',
+        'ца́р\\.',
+        'цар\\.',
         'ѱало́мъ',
-        'ѱалма̀'
+        'ѱалма̀',
+        'Ѱал\\.',
+        'Трет\\. посл\\. Карѳ\\.',
+        'Дїонѵ́с\\. а҆леѯ\\.',
+        'Григ\\. неокес\\.',
+        'Григ\\. нѵ́сс\\.',
+        'Дїон\\. а҆леѯ\\.',
+        'Петр\\. а҆леѯ\\.',
+        'Слич\\. Двꙋкр\\.',
+        'Григ\\. неок\\.',
+        'Премꙋ́др\\.',
+        'А҆гкѵ́р\\.',
+        'А҆нтїох\\.',
+        'А҆по́ст\\.',
+        'Дїонѵ́с\\.',
+        'Та́мъ же',
+        'Ѳео́фїл\\.',
+        'А҆гѵ́р\\.',
+        'А҆пост\\.',
+        'Васі́л\\.',
+        'Га́нгр\\.',
+        'Кѵрі́л\\.',
+        'Кѷрі́л\\.',
+        'Двꙋкр\\.',
+        'Пе́рв\\.',
+        'Тїмоѳ\\.',
+        'Ѳео́ф\\.',
+        'А҆гк\\.',
+        'А҆нт\\.',
+        'Карѳ\\.',
+        'Лаод\\.',
+        'Неок\\.',
+        'Перв\\.',
+        'Сард\\.',
+        'Седм\\.',
+        'Трет\\.',
+        'Четв\\.',
+        'Шест\\.',
+        'Вас\\.',
       ].join('|');
 
       // Only target specific liturgical contexts to avoid widespread &nbsp; pollution
       // Pattern: liturgical terms followed by space and numeral
       // Match only when preceded by whitespace, start of line, or HTML tag to avoid matching parts of words
       content = content.replace(
-        new RegExp(`(^|\\s|>)(${liturgicalTerms})\\s+(${numeralPattern})`, 'gi'),
+        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms})\\s+(${numeralPattern})`, 'gi'),
         '$1$2&nbsp;$3'
       );
 
       // Pattern: comma followed by space and numeral (only in specific contexts)
-      // Match only when preceded by whitespace, start of line, or HTML tag to avoid matching parts of words
+      // Match only when preceded by whitespace, start of line, HTML tag, or opening bracket
       content = content.replace(
-        new RegExp(`(^|\\s|>)(${liturgicalTerms}),\\s+(${numeralPattern})`, 'gi'),
+        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms}),\\s+(${numeralPattern})`, 'gi'),
         '$1$2,&nbsp;$3'
+      );
+
+      // Pattern: liturgical terms followed by space and linked numeral (e.g. зача́ло <a href="...">к҃и</a>)
+      content = content.replace(
+        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms})\\s+(<a [^>]*>${numeralPattern}<\\/a>)`, 'gim'),
+        '$1$2&nbsp;$3'
+      );
+
+      // Pattern: comma followed by space and linked numeral (in liturgical contexts)
+      content = content.replace(
+        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms}),\\s+(<a [^>]*>${numeralPattern}<\\/a>)`, 'gim'),
+        '$1$2,&nbsp;$3'
+      );
+
+      // Non-breaking space after inline rubric verse/chapter numbers (e.g. <rubric class="inline vn" id="...">ѳ҃:</rubric>)
+      content = content.replace(/(<rubric class="inline[^"]*"[^>]*>[а-ѱѡцѳѻꙋ][҃҂][^<]*:<\/rubric>) /g, '$1&nbsp;');
+
+      // Non-breaking space after inline rubric verse numbers without colon (e.g. <rubric class="inline vn" id="...">ѕ҃і</rubric>)
+      content = content.replace(/(<rubric class="inline[^"]*"[^>]*>[а-ѱѡцѳѻꙋ][҃҂][^\s<:]*<\/rubric>) /g, '$1&nbsp;');
+
+      // Non-breaking space after linked numerals, with or without a trailing </rubric>
+      // (e.g. <a href="...">в҃</a>, <a href="...">[в҃]</a></rubric>, or <a href="...">є҃:</a></rubric>)
+      content = content.replace(/(<a [^>]*>\[?[а-ѱѡцѳѻꙋ][҃҂][^\s<]*<\/a>(?:<\/rubric>)?) /g, '$1&nbsp;');
+
+      // Non-breaking space between numeral and following week noun (e.g. в҃ недѣ́ли, д҃ седми́цы)
+      // Require numeral to be at a word boundary (after whitespace or start of line only, not >
+      // to avoid false matches on split-versal patterns like <red>Ц</red>р҃кве)
+      content = content.replace(
+        new RegExp(`(^|\\s)(${numeralPattern}) ([НнСс]ед\\S*)`, 'gm'),
+        '$1$2&nbsp;$3'
       );
     }
     return content;
@@ -414,7 +529,7 @@ module.exports = function(eleventyConfig) {
 
       // Handle styled nested fold sections with dash syntax (open variant)
       content = content.replace(
-        /\[\[fold-(red|rubric|h1|h2|toc)-open:([^\]]+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
+        /\[\[fold-(red|rubric|h1|h2|toc)-open:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
         function(match, style, summary, foldContent) {
           const contentWithMarker = addEndMarker(foldContent);
           return `<details open><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
@@ -423,7 +538,7 @@ module.exports = function(eleventyConfig) {
 
       // Handle styled nested fold sections with dash syntax (closed variant)
       content = content.replace(
-        /\[\[fold-(red|rubric|h1|h2|toc):([^\]]+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
+        /\[\[fold-(red|rubric|h1|h2|toc):((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
         function(match, style, summary, foldContent) {
           const contentWithMarker = addEndMarker(foldContent);
           return `<details><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
@@ -432,7 +547,7 @@ module.exports = function(eleventyConfig) {
 
       // Handle open nested sections with default styling
       content = content.replace(
-        /\[\[fold-open:([^\]]+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
+        /\[\[fold-open:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
         function(match, summary, foldContent) {
           const contentWithMarker = addEndMarker(foldContent);
           return `<details open><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;
@@ -441,7 +556,7 @@ module.exports = function(eleventyConfig) {
 
       // Handle closed nested sections with default styling
       content = content.replace(
-        /\[\[fold:([^\]]+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
+        /\[\[fold:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
         function(match, summary, foldContent) {
           const contentWithMarker = addEndMarker(foldContent);
           return `<details><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;

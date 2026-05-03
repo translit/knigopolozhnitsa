@@ -1,0 +1,25 @@
+---
+title: "Лѣ́ствица"
+subtitle: "и҆́же во ст҃ы́хъ ѻ҆ц҃а̀ на́шегѡ і҆ѡа́нна."
+layout: work.njk
+navigation:
+  key: various-lestvitsa-old
+  title: "Лѣ́ствица"
+source: "https://alexsem.org/libcs/reader/various/lestvitsa/"
+---
+
+{% set unsortedParts = [] %}
+{% for part in collections.variousParts %}
+  {% if part.inputPath.includes('/various/lestvitsa-old/') %}
+    {% set unsortedParts = (unsortedParts.push(part), unsortedParts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for part in unsortedParts | sortByNumber %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
+{% endfor %}
+</ul>

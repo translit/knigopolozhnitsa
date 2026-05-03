@@ -3,7 +3,7 @@ title: "Бл҃года́рст&shy;вєнныѧ мл҃твы"
 subtitle: "по ст҃ѣ́мъ причаще́нїи."
 navigation:
   key: prayers-thanks
-  title: "Бл҃года́рст&shy;вєнныѧ"
+  title: "Бл҃года́рствєнныѧ"
   parent: prayers
   order: 1
 type: "prayer"
@@ -94,4 +94,4 @@ type: "prayer"
 
 <rubric>По причаще́нїи же да храни́тъ себѐ кі́йждѡ въ трезве́нїи и҆ воздержа́нїи, и҆ немногоглаго́ланїи: дабы̀ въ то́й де́нь чⷭ҇тнѡ соблю́лъ въ себѣ̀ хрⷭ҇та̀ прїѧ́таго.</rubric>
 
-{% illustration "small-ornaments/jerusalem-cross-gould", "small" %}
+{% illustration "small-ornaments/prosphora-seal-lukovich", "small" %}

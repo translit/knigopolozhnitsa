@@ -37,6 +37,7 @@
   --bg-color: #fbf5ea;
   --text-color: #1a1a1a;
   --red-color: #cc0502;
+  --red-hover-color: #990401;
   --border-color: #e0e0e0;
   --link-color: #0066cc;
   --link-hover-color: #004499;
@@ -49,7 +50,6 @@
 
   /* Typography sizes */
   --text-size-base: 1.75rem;
-  --text-size-medium: 1.6rem;
   --text-size-small: 1.5rem;
   --text-size-xsmall: 1.3rem;
   --text-size-large: 3rem;
@@ -74,7 +74,6 @@
   /* Line heights */
   --line-height-tight: 1.3;
   --line-height-base: 1.6;
-  --line-height-loose: 1.7;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -84,6 +83,7 @@
     --border-color: #333333;
     --link-color: #66b3ff;
     --link-hover-color: #99ccff;
+    --red-hover-color: #ff4444;
   }
 }
 
@@ -143,11 +143,9 @@ main {
 .homepage > main > h1 .title-main,
 .section > main > h1 .title-main,
 .work > main > h1 .title-main {
-  font-family: var(--oglavie-font);
   font-size: var(--text-size-large);
   display: block;
   margin-bottom: 0.5rem;
-  letter-spacing: 0.03em;
 }
 
 .homepage > main > h1 .title-subtitle,
@@ -169,6 +167,12 @@ article.liturgical-text h1,
   color: var(--red-color);
   text-align: center;
   margin: var(--spacing-base) 0;
+}
+
+.chapter h1.oglavie {
+  font-family: var(--oglavie-font);
+  font-size: var(--text-size-large);
+  letter-spacing: 0.03em;
 }
 
 article.liturgical-text h2,
@@ -195,34 +199,24 @@ article.liturgical-text h2,
   margin: 0;
 }
 
-/* Homepage main navigation - base size */
-.homepage nav li {
-  font-family: var(--triodion-font);
-  font-size: var(--text-size-base);
-  font-weight: normal;
-  line-height: var(--line-height-tight);
-  text-align: center;
-  margin: var(--spacing-base) 0;
-}
-
-/* Section navigation - base size */
-.section nav li {
-  font-family: var(--triodion-font);
-  font-size: var(--text-size-base);
-  font-weight: normal;
-  line-height: var(--line-height-tight);
-  text-align: center;
-  margin: var(--spacing-base) 0;
-}
-
-/* Work-level TOC - base size */
+/* Navigation list items - base size */
+.homepage nav li,
+.section nav li,
 .work-toc li {
   font-family: var(--triodion-font);
   font-size: var(--text-size-base);
   font-weight: normal;
   line-height: var(--line-height-tight);
   text-align: center;
-  margin: var(--spacing-large) 0 var(--spacing-small) 0;
+  margin: var(--spacing-base) 0;
+}
+
+.work-toc .toc-divider {
+  margin: var(--spacing-small) 0;
+}
+
+.work-toc .toc-section {
+  color: var(--red-color);
 }
 
 /* Navigation link styling - use default link colors */
@@ -329,6 +323,19 @@ caesura {
   display: none;
 }
 
+/* Church Slavonic Asterisk (U+A673) in zachala rubrics
+   Preserved in source as splice point marker; hidden for readers. */
+csa {
+  display: none;
+}
+
+/* VL - Verse Label: marginal abbreviation (сⷯ) in Apostle readings
+   indicating that adjacent numbers are verse (stikh) numbers.
+   Preserved in source for reference; hidden for readers. */
+vl {
+  display: none;
+}
+
 rubric {
   display: block;
   font-family: var(--triodion-font);
@@ -344,26 +351,63 @@ rubric.inline {
   margin: 0;
 }
 
-/* Liturgical text within rubrics */
+/* zn = знамена́нїе (σημείωσꙇς) — ancient chapter/division markers in Apostle */
+rubric.inline.zn {
+  /* Base class for all znamenaniya markers */
+}
+
+/* Chapter znamenaniya (черные знаменания) — black like body text */
+rubric.inline.zn.chapter {
+  color: var(--text-color);
+}
+
+/* Division znamenaniya (червленые знаменания) */
+rubric.inline.division {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* keph = κεφάλαιον (or τίτλοι) — Greek chapter markers in Gospel (Codex Alexandrinus) */
+rubric.inline.keph {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* vn = verse number (стїхъ) — modern (Stephanian) verse markers */
+rubric.inline.vn {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* dl = dominical letters (вруцелéто) in monthly calendar entries */
+rubric.inline.dl {
+  /* Inherits rubric.inline appearance; class reserved for future restyling */
+}
+
+/* dn = день — day-of-week lection markers in Apostle and Gospel */
+rubric.inline.dn {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* zch = зача́ло — liturgical reading-start markers in Apostle and Gospel */
+rubric.inline.zch {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* nb = нота бене (зрѝ) — nota bene rubrical marker for important instructions */
+rubric.inline.nb {
+  /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* Canon-rule deep links inside А҆лфави́тъ rubric citations */
+rubric.inline a.canon-ref {
+  /* Reserved for future restyling; inherits surrounding rubric color today */
+}
+
+/* Liturgical text within rubrics (text that needs to stay black inside rubrics) */
 rubric .liturgical-text {
   color: var(--text-color);
 }
 
-/* Incipit (opening words of liturgical texts) */
-incipit {
-  display: inline;
-  font-family: var(--triodion-font);
-  line-height: var(--line-height-base);
-  color: var(--text-color);
-  margin: 0;
-}
-
-/* Incipit inside rubrics inherits rubric's font-size */
-rubric incipit {
-  font-size: inherit;
-}
-
-/* Acrostic (opening words of liturgical texts) - same as incipit */
+/* Incipit (opening words of liturgical texts) and Acrostic */
+incipit,
 acrostic {
   display: inline;
   font-family: var(--triodion-font);
@@ -372,7 +416,8 @@ acrostic {
   margin: 0;
 }
 
-/* Acrostic inside rubrics inherits rubric's font-size */
+/* Inside rubrics, inherit rubric's font-size */
+rubric incipit,
 rubric acrostic {
   font-size: inherit;
 }
@@ -408,16 +453,28 @@ refrain red {
   font-size: inherit;
 }
 
-/* Date markers (day numbers with titlo) - preserve default text color */
-date {
-  display: inline;
-  color: var(--text-color);
+/* dt = date markers (day numbers) in calendar files — Typikon, Apostle, Gospel, Menaiontotal */
+rubric.dt {
+  /* Placeholder for future date styling */
 }
 
-/* Feast symbols - preserve their existing color and size regardless of surrounding context */
+/* Feast-rank symbols (знамена́нїѧ пра́здникѡвъ) in Typikon calendar */
 feast {
   display: inline;
-  color: var(--text-color);
+}
+feast.vp { color: var(--red-color); }   /* великий праздник — great feast 🕀 */
+feast.bd { color: var(--red-color); }   /* бдение — vigil 🕁 */
+feast.pl { color: var(--red-color); }   /* полиелей — polyeleos 🕂 */
+feast.sl { color: var(--red-color); }   /* славословие — doxology 🕃 (red) */
+feast.sh { color: var(--text-color); }  /* шестеричная — hexastechiraric 🕃 (black) */
+
+/* mc = Маркова глава́ (Markian Capital) — rubrical rules by Mark of Otranto */
+mc {
+  display: inline;
+}
+
+mc::before {
+  content: "\FE0E";   /* \FE0E = VS-15: forces text (non-emoji) rendering cross-browser */
 }
 
 /* Irmos (liturgical text, same size as rubrics but black) */
@@ -427,18 +484,6 @@ irmos {
   font-size: var(--text-size-small);
   line-height: var(--line-height-base);
   color: var(--text-color);
-}
-
-/* Ensure irmos inside paragraphs uses correct size */
-p > irmos,
-p irmos,
-irmos {
-  font-size: var(--text-size-small) !important;
-}
-
-/* Alternative: class-based styling for irmos */
-.irmos {
-  font-size: var(--text-size-small) !important;
 }
 
 /* Fix line-height for paragraphs containing small liturgical elements */
@@ -475,7 +520,8 @@ p:has(refrain) {
   margin-top: var(--spacing-small);
 }
 
-.footnotes rubric {
+.footnotes rubric,
+p[id^="fn"] rubric {
   display: inline;
 }
 
@@ -499,6 +545,7 @@ a[href^="#ref"] {
    ========================================================================== */
 
 #julian-date,
+#liturgical-week,
 #current-tone {
   text-align: center;
   font-size: var(--text-size-small);
@@ -506,6 +553,9 @@ a[href^="#ref"] {
   font-family: var(--triodion-font);
   color: var(--red-color);
 }
+
+#julian-date { margin-bottom: 0; }
+#liturgical-week { margin-top: 0; }
 
 .homepage-cross {
   text-align: center;
@@ -524,6 +574,7 @@ a[href^="#ref"] {
   color: var(--red-color);
   font-family: var(--triodion-font);
   font-size: var(--text-size-base);
+  line-height: 1;
 }
 
 .toc-divider::before {
@@ -557,8 +608,7 @@ h2 + .toc-divider {
   color: var(--red-color);
 }
 
-/* Optical compensation: reduce gap when h1 follows illustration
-   to account for diacritical marks extending above letter bodies */
+/* Single spacing-base gap when h1 follows illustration */
 .homepage .illustration:has(+ h1),
 .section .illustration:has(+ h1),
 .work .illustration:has(+ h1) {
@@ -568,10 +618,12 @@ h2 + .toc-divider {
 .homepage .illustration + h1,
 .section .illustration + h1,
 .work .illustration + h1 {
-  margin-top: calc(var(--spacing-base) - 0.2em);
+  margin-top: var(--spacing-base);
 }
 
 .illustration svg {
+  display: block;
+  margin: 0 auto;
   max-width: 100%;
   height: auto;
   fill: currentColor;
@@ -597,11 +649,9 @@ h2 + .toc-divider {
   max-width: var(--illustration-size-xlarge);
 }
 
-/* Responsive illustration sizing - full width on mobile, limited on larger screens */
-@media (min-width: 768px) {
-  .illustration:not([class*="illustration-"]) svg {
-    max-width: 25rem;
-  }
+/* Cap unsized illustrations at 25rem; base max-width: 100% still constrains on narrow containers */
+.illustration:not([class*="illustration-"]) svg {
+  width: 25rem;
 }
 
 /* ==========================================================================
@@ -618,6 +668,15 @@ a {
 a:hover {
   color: var(--link-hover-color);
   border-bottom-color: var(--link-hover-color);
+}
+
+a.div {
+  color: var(--red-color);
+}
+
+a.div:hover {
+  color: var(--red-hover-color);
+  border-bottom-color: var(--red-hover-color);
 }
 
 /* Inherit font for specific link contexts */
@@ -902,14 +961,12 @@ details[open] > *:not(summary) {
 }
 
 /* ==========================================================================
-   MOBILE RESPONSIVENESS
+   TABLET (touch devices up to iPad Pro 12.9" landscape)
    ========================================================================== */
 
-@media (max-width: 834px) {
+@media (max-width: 1366px) and (pointer: coarse) {
   :root {
-    /* Adjust sizes for mobile */
     --text-size-base: 2.2rem;
-    --text-size-medium: 2rem;
     --text-size-small: 1.9rem;
     --text-size-xsmall: 1.65rem;
     --text-size-large: 3.8rem;
@@ -917,7 +974,16 @@ details[open] > *:not(summary) {
     --versal-margin-top: 0.12em;
     --versal-diacritic-padding: 0.4em;
   }
+  body {
+    max-width: none;
+  }
+}
 
+/* ==========================================================================
+   MOBILE RESPONSIVENESS
+   ========================================================================== */
+
+@media (max-width: 834px) {
   body {
     padding: 0.75rem;
   }

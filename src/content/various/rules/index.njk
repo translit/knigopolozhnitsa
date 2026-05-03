@@ -1,11 +1,27 @@
 ---
 title: "Кни́га пра́вилъ"
-subtitle: "свѧты́хъ а҆по́столѡвъ, свѧты́хъ собо́рѡвъ вселе́нскихъ и҆ помѣ́стныхъ, и҆ свѧты́хъ ѻ҆тє́цъ."
+subtitle: "свѧты́хъ а҆по́столъ, свѧты́хъ собо́рѡвъ вселе́нскихъ и҆ помѣ́стныхъ, и҆ свѧты́хъ ѻ҆тє́цъ."
 layout: work.njk
 navigation:
   key: various-rules
-  title: "Пра́вила а҆по́столѡвъ, собо́рѡвъ, и҆ свѧты́хъ ѻ҆тє́цъ"
+  title: "Кни́га пра́вилъ"
   parent: various
+tocDividers:
+  - "5"
+  - "6"
+  - "13"
+  - "23"
+  - "26"
+  - "29"
+  - "39"
+  - "43"
+  - "48"
+  - "50"
+  - "52"
+tocSections:
+  "7": "Пра̑вила собо́рѡвъ вселе́нскихъ"
+  "14": "Пра̑вила собо́рѡвъ помѣ́стныхъ"
+  "24": "Пра̑вила свѧты́хъ ѻ҆тє́цъ"
 ---
 
 {% set unsortedParts = [] %}
@@ -17,6 +33,12 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
   <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
 {% endfor %}
 </ul>
