@@ -12,9 +12,7 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Ѻ҆кто́ихъ, гла́сы а҃-д҃](octoechos14/)
-- [Ѻ҆кто́ихъ, гла́сы є҃-и҃](octoechos58/)
-- [Ѻ҆ктѡ́ихъ, приложе́нїе](octoechosadd/)
+- [Ѻ҆ктѡ́ихъ](octoechos/)
 
 <div class="toc-divider"></div>
 
@@ -72,7 +70,6 @@ navigation:
 - [Тропарѝ, кондакѝ, задосто́йники и҆ велича̑нїѧ пра́здникѡмъ](troparia12/)
 
 <!--
-- [Служба общая Господу (из канонника)](godservice/)
 - [Тѷпїко́нъ, ча́сть ѻ҆́бщаѧ](typikontotal/)
 - [Тѷпїко́нъ, ча́сть ча́стнаѧ](typikonspecial/)
 - [Тѷпїко́нъ, дополне́нїѧ](typikonadditional/)

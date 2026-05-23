@@ -1,9 +1,9 @@
 ---
-title: "Мл҃твы"
+title: "Молитвосло́въ"
 illustration: "bars-headers-fullpage/russian-interlace-bar-2"
 navigation:
   key: prayers
-  title: "Мл҃твы"
+  title: "Молитвосло́въ"
   parent: library
 ---
 
@@ -22,11 +22,10 @@ navigation:
 - [Мл҃твы бцⷣе всеѧ́ седми́цы](virgindaily/)
 - [Мл҃твы бцⷣе пред̾ і҆кѡ́нами](virginicons/)
 - [Мл҃твы а҆́гг҃лꙋ храни́телю](angel/)
-- [Мл҃твы ст҃ы́мъ, септе́мврїй-деке́мврій](saintssepdec/)
-- [Мл҃твы ст҃ы́мъ, і҆анꙋа́рій-апри́лїй](saintsjanapr/)
-- [Мл҃твы ст҃ы́мъ, ма́їй-а҆́вгꙋстъ](saintsmayaug/)
+- [Мл҃твы ст҃ы́мъ, септе́мврїй‐деке́мврій](saintssepdec/)
+- [Мл҃твы ст҃ы́мъ, і҆анꙋа́рій‐апри́лїй](saintsjanapr/)
+- [Мл҃твы ст҃ы́мъ, ма́їй‐а҆́вгꙋстъ](saintsmayaug/)
 
 <div class="toc-divider"></div>
 
 - [Послѣ́дованїе і҆ере́йское ко ст҃о́мꙋ причаще́нїю](oblationpriest/)
-- [Ѱалти́рь бж҃їей мт҃ри](psaltermary/)

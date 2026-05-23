@@ -1,0 +1,46 @@
+---
+title: "Бі́блїа"
+subtitle: "сі́рѣчь кни̑ги сщ҃е́ннагѡ писа́нїѧ ве́тхагѡ и҆ но́вагѡ завѣ́та."
+layout: work.njk
+illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+source: <https://wikisource.org/wiki/Бі́блїа>
+navigation:
+  key: bible
+  title: "Бі́блїа"
+  parent: library
+  order: 0
+tocMajorSections:
+  "Gen":  "Ве́тхїй завѣ́тъ"
+  "Matt": "Но́вый завѣ́тъ"
+tocSections:
+  "Gen":  "Пѧтикни́жїе мѡѷсе́ово"
+  "Josh": "Кни̑ги і҆сторі́ческїѧ"
+  "Job":  "Кни̑ги ѹ҆чи́тєльныѧ"
+  "Isa":  "Кни̑ги прⷪ҇ро́чєскїѧ"
+  "Matt": "Є҆ѵⷢ҇лїе"
+  "Jas":  "Посла́нїѧ собо́рныѧ"
+  "Rom":  "Посла́нїѧ ст҃а́гѡ а҆пⷭ҇ла па́ѵла"
+tocDividers:
+  - "Deut"
+  - "3Macc"
+  - "Sir"
+  - "John"
+  - "Acts"
+  - "Jude"
+  - "Heb"
+---
+
+<ul class="work-toc">
+{% for part in collections.bibleBooks %}
+  {% if tocMajorSections and part.fileSlug in tocMajorSections %}
+    <li class="toc-major-section">{{ tocMajorSections[part.fileSlug] }}</li>
+  {% endif %}
+  {% if tocSections and part.fileSlug in tocSections %}
+    <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
+  {% endif %}
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  {% if tocDividers and part.fileSlug in tocDividers %}
+    <li class="toc-divider" aria-hidden="true"></li>
+  {% endif %}
+{% endfor %}
+</ul>

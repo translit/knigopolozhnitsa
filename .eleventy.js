@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 module.exports = function(eleventyConfig) {
 
   // PERFORMANCE OPTIMIZATION: Cache navigation data
@@ -73,8 +75,8 @@ module.exports = function(eleventyConfig) {
   // Add filter for numerical sorting (for dynamic subsection indexes)
   eleventyConfig.addFilter("sortByNumber", function(collection) {
     return collection.sort((a, b) => {
-      const aNum = parseInt(a.fileSlug);
-      const bNum = parseInt(b.fileSlug);
+      const aNum = parseInt(a.fileSlug.replace(/-/g, ''));
+      const bNum = parseInt(b.fileSlug.replace(/-/g, ''));
       return aNum - bNum;
     });
   });
@@ -82,10 +84,6 @@ module.exports = function(eleventyConfig) {
   // Collections for dynamic subsection indexes
   eleventyConfig.addCollection("akathistParts", function(collectionApi) {
     return collectionApi.getFilteredByGlob("src/content/akathists/*/*.md");
-  });
-
-  eleventyConfig.addCollection("canonParts", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("src/content/canons/*/*.md");
   });
 
   eleventyConfig.addCollection("psalterParts", function(collectionApi) {
@@ -100,8 +98,18 @@ module.exports = function(eleventyConfig) {
     return collectionApi.getFilteredByGlob("src/content/service/*/*.md");
   });
 
+  eleventyConfig.addCollection("canonParts", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("src/content/canons/*/*.md");
+  });
+
   eleventyConfig.addCollection("variousParts", function(collectionApi) {
     return collectionApi.getFilteredByGlob("src/content/various/*/*.md");
+  });
+
+  eleventyConfig.addCollection("bibleBooks", function(collectionApi) {
+    return collectionApi.getFilteredByGlob("src/content/bible/*.md")
+      .filter(item => !item.inputPath.endsWith('index.njk') && item.fileSlug !== 'bible')
+      .sort((a, b) => (a.data.navigation?.order || 0) - (b.data.navigation?.order || 0));
   });
 
   // Collections for chapter navigation (FIXED to prevent conflicts)
@@ -361,6 +369,7 @@ module.exports = function(eleventyConfig) {
         'Галат\\.',
         'гл\\.',
         'глава̀',
+        'гла́въ',
         'гла́съ',
         'Дан\\.',
         'Дѣѧ́н\\.',
@@ -497,6 +506,14 @@ module.exports = function(eleventyConfig) {
       // Non-breaking space after inline rubric verse numbers without colon (e.g. <rubric class="inline vn" id="...">ѕ҃і</rubric>)
       content = content.replace(/(<rubric class="inline[^"]*"[^>]*>[а-ѱѡцѳѻꙋ][҃҂][^\s<:]*<\/rubric>) /g, '$1&nbsp;');
 
+      // Bible chapter openings have their leading verse-number rubric hidden by CSS
+      // (p:has(> versal) > rubric.inline.vn:first-of-type { display: none }) so it does
+      // not collide with the versal drop-cap. The &nbsp; inserted just above would then
+      // leave a visible gap before the versal — strip whitespace whenever a vn rubric is
+      // directly adjacent to a versal, regardless of verse id (Psalms with title
+      // superscriptions open at chNv2 or chNv3, not chNv1).
+      content = content.replace(/(<rubric class="inline vn"[^>]*>[^<]+<\/rubric>)(?:&nbsp;| )(<versal\b)/g, '$1$2');
+
       // Non-breaking space after linked numerals, with or without a trailing </rubric>
       // (e.g. <a href="...">в҃</a>, <a href="...">[в҃]</a></rubric>, or <a href="...">є҃:</a></rubric>)
       content = content.replace(/(<a [^>]*>\[?[а-ѱѡцѳѻꙋ][҃҂][^\s<]*<\/a>(?:<\/rubric>)?) /g, '$1&nbsp;');
@@ -506,6 +523,26 @@ module.exports = function(eleventyConfig) {
       // to avoid false matches on split-versal patterns like <red>Ц</red>р҃кве)
       content = content.replace(
         new RegExp(`(^|\\s)(${numeralPattern}) ([НнСс]ед\\S*)`, 'gm'),
+        '$1$2&nbsp;$3'
+      );
+
+      // Word parts that follow an ordinal numeral in numbered Bible book abbreviations.
+      // Sorted longest-first within each group to prevent partial shadowing.
+      const numberedBookParts = [
+        'Мѡѷс\\.',                                                              // Books of Moses
+        'Царⷭ҇\\.', 'Царⷭ҇',                                                   // Kings/Samuel (superscript titlo)
+        'цр҃тв\\.', 'Ца́р\\.', 'Цар\\.', 'ца́р\\.', 'цар\\.',                  // Kings/Samuel
+        'Парал\\.',                                                              // Chronicles
+        'Є҆здр\\.',                                                              // Esdras
+        'Мак\\.',                                                                // Maccabees
+        'Петра̀', 'Петр\\.', 'петр\\.',                                         // Peter
+        'І҆ѡа́н\\.', 'і҆ѡа́н\\.', 'І҆ѡа́н',                                     // John (Epistles)
+        'Корі́нѳ\\.', 'Корі́н\\.', 'Корїн\\.', 'корі́нѳ', 'Кор\\.', 'кор\\.', // Corinthians
+        'Солꙋ́н\\.', 'Сол\\.', 'сол\\.',                                       // Thessalonians
+        'Тїмоѳ\\.', 'тїмоѳ\\.', 'Тїм\\.', 'тїм\\.',                          // Timothy
+      ].join('|');
+      content = content.replace(
+        new RegExp(`(^|\\s|>|\\[)(${numeralPattern}) (${numberedBookParts})`, 'g'),
         '$1$2&nbsp;$3'
       );
     }
@@ -608,6 +645,48 @@ module.exports = function(eleventyConfig) {
 
       return content;
     }
+    return content;
+  });
+
+  // Add id attributes to headings and fold <details> elements for anchor linking.
+  // Runs after foldSections so <details>/<summary> are already in place.
+  eleventyConfig.addTransform("headingIds", function(content, outputPath) {
+    if (!outputPath || !outputPath.endsWith(".html")) return content;
+
+    const decodeEntities = (html) => html
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n)))
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+
+    const stripTags = (html) =>
+      decodeEntities(html.replace(/<[^>]+>/g, "")).normalize("NFC").trim();
+
+    const hashId = (text) =>
+      "h-" + crypto.createHash("sha1").update(text).digest("hex").slice(0, 8);
+
+    const seen = new Map();
+    const uniqueId = (base) => {
+      const n = (seen.get(base) || 0) + 1;
+      seen.set(base, n);
+      return n === 1 ? base : `${base}-${n}`;
+    };
+
+    content = content.replace(
+      /<(h[1-6])(?![^>]*\bid=)([^>]*)>([\s\S]*?)<\/\1>/g,
+      (m, tag, attrs, inner) =>
+        `<${tag} id="${uniqueId(hashId(stripTags(inner)))}"${attrs}>${inner}</${tag}>`
+    );
+
+    content = content.replace(
+      /<details(?![^>]*\bid=)([^>]*)>\s*<summary>([\s\S]*?)<\/summary>/g,
+      (m, attrs, summaryInner) =>
+        `<details id="${uniqueId(hashId(stripTags(summaryInner)))}"${attrs}><summary>${summaryInner}</summary>`
+    );
+
     return content;
   });
 

@@ -9,11 +9,25 @@ class ChapterNavigation {
     this.initFoldEndMarkers();
   }
 
+  // Redirect #chNv1 → #chN: verse-1 anchors are hidden by CSS (versal drop-cap
+  // replaces the verse number visually), so scroll to the chapter anchor instead.
+  resolveAnchor(id) {
+    const m = id.match(/^(ch\d+)v1$/);
+    if (m) {
+      const chapterEl = document.getElementById(m[1]);
+      if (chapterEl) return m[1];
+    }
+    return id;
+  }
+
   // On iOS Safari, <details> elements are not automatically opened when a
   // URL fragment targets a descendant element. Open them explicitly.
   initHashNavigation() {
     if (!window.location.hash) return;
-    const target = document.getElementById(window.location.hash.slice(1));
+    const rawId = window.location.hash.slice(1);
+    const id = this.resolveAnchor(rawId);
+    if (id !== rawId) history.replaceState(null, '', '#' + id);
+    const target = document.getElementById(id);
     if (!target) return;
     let el = target.parentElement;
     while (el) {
@@ -30,8 +44,9 @@ class ChapterNavigation {
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a[href^="#"]');
       if (!link) return;
-      const id = link.getAttribute('href').slice(1);
-      if (!id) return;
+      const rawId = link.getAttribute('href').slice(1);
+      if (!rawId) return;
+      const id = this.resolveAnchor(rawId);
       const target = document.getElementById(id);
       if (!target) return;
       e.preventDefault();

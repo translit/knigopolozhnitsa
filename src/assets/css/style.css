@@ -215,6 +215,13 @@ article.liturgical-text h2,
   margin: var(--spacing-small) 0;
 }
 
+.work-toc .toc-major-section {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--red-color);
+  margin-top: var(--spacing-large);
+}
+
 .work-toc .toc-section {
   color: var(--red-color);
 }
@@ -236,6 +243,19 @@ article.liturgical-text h2,
 .work-toc a:hover {
   color: var(--link-hover-color);
   border-bottom-color: var(--link-hover-color);
+}
+
+/* Bible book chapter TOC */
+.book-toc {
+  font-family: var(--triodion-font);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+  overflow-wrap: break-word;
+  margin-bottom: var(--spacing-base);
+}
+
+.book-toc a {
+  color: var(--link-color);
 }
 
 /* ==========================================================================
@@ -374,6 +394,12 @@ rubric.inline.keph {
 /* vn = verse number (стїхъ) — modern (Stephanian) verse markers */
 rubric.inline.vn {
   /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
+}
+
+/* In Bible chapter openings, the v1 verse-number rubric is visually replaced by the versal drop-cap.
+   Scoped via :has so apostle/gospel readings (which use rubric.inline.vn without versals) are unaffected. */
+p:has(> versal) > rubric.inline.vn:first-of-type {
+  display: none;
 }
 
 /* dl = dominical letters (вруцелéто) in monthly calendar entries */
@@ -546,7 +572,8 @@ a[href^="#ref"] {
 
 #julian-date,
 #liturgical-week,
-#current-tone {
+#current-tone,
+#great-feast {
   text-align: center;
   font-size: var(--text-size-small);
   margin: var(--spacing-base) 0;
@@ -554,8 +581,9 @@ a[href^="#ref"] {
   color: var(--red-color);
 }
 
-#julian-date { margin-bottom: 0; }
-#liturgical-week { margin-top: 0; }
+#julian-date     { margin-bottom: 0; }
+#liturgical-week { margin-top: 0; margin-bottom: 0; }
+#great-feast     { margin-top: 0; }
 
 .homepage-cross {
   text-align: center;
@@ -828,12 +856,12 @@ summary:has(.summary-default) {
 
 /* TOC-specific fold summary styling */
 .summary-toc {
-  color: var(--link-color);
+  color: var(--red-color);
 }
 
 /* Triangle color override for TOC folds - simplified selector */
 .work-toc details .triangle {
-  color: var(--link-color);
+  color: var(--red-color);
 }
 
 /* Remove bullets from lists inside TOC folds */
@@ -856,7 +884,7 @@ summary:has(.summary-default) {
 
 .work-toc details summary {
   display: block;
-  color: var(--link-color);
+  color: var(--red-color);
   padding: 0;
   margin: 0;
 }

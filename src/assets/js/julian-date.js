@@ -42,8 +42,8 @@
     pentecost:        'Пѧтидесѧ́тница',
     afterPascha:      'по па́сцѣ',
     // Post-Pentecost
-    allSaintsSuffix:  'всѣ́хъ ст҃ы́хъ',     // "Недѣ́лѧ а҃ всѣ́хъ ст҃ы́хъ"
-    afterAllSaints:   'по всѣ́хъ ст҃ы́хъ',  // "Недѣ́лѧ в҃ по всѣ́хъ ст҃ы́хъ"
+    allSaintsSuffix:  'всѣ́хъ ст҃ы́хъ',   // All Saints Sunday qualifier
+    afterPentecost:   'по пѧтдесѧ́тницѣ', // post-Pentecost weeks
     // Pre-Lenten named weeks (from gospel/25.md)
     publicanPharisee: 'ѡ҆ мытарѝ и҆ фарїсе́и',
     prodigalSon:      'ѡ҆ блꙋ́днѣмъ сы́нѣ',
@@ -58,6 +58,30 @@
     sunday:           'Недѣ́лѧ',
     sedmitsa:         'Седми́ца',
     glas:             'Гла́съ',
+  };
+
+  // Movable great feasts keyed by days-since-Pascha (nday)
+  // Pascha (0), Palm Sunday (-7), Pentecost (49) omitted — already on line 2
+  const GREAT_FEASTS_MOVABLE = {
+    39: 'Вознесе́нїе гдⷭ҇а бг҃а и҆ сп҃са на́шегѡ і҆и҃са хрⷭ҇та̀',
+  };
+
+  // Fixed great feasts keyed by Julian 'MM-DD'
+  const GREAT_FEASTS_FIXED = {
+    '01-01': 'Є҆́же по пло́ти ѡ҆брѣ́занїе гдⷭ҇а на́шегѡ і҆и҃са хрⷭ҇та̀',
+    '01-06': 'Бг҃оѧвле́нїе гдⷭ҇а бг҃а и҆ сп҃са на́шегѡ і҆и҃са хрⷭ҇та̀',
+    '02-02': 'Срѣ́тенїе гдⷭ҇а бг҃а и҆ сп҃са на́шегѡ і҆и҃са хрⷭ҇та̀',
+    '03-25': 'Бл҃говѣ́щенїе прест҃ы́ѧ влⷣчцы на́шеѧ бцⷣы, и҆ приснодв҃ы мр҃і́и',
+    '06-24': 'Ржⷭ҇тво̀ чтⷭ҇на́гѡ сла́внагѡ прⷪ҇ро́ка, прⷣте́чи и҆ крⷭ҇ти́телѧ і҆ѡа́нна',
+    '06-29': 'Ст҃ы́хъ сла́вныхъ и҆ всехва́льныхъ и҆ первоверхо́вныхъ а҆пⷭ҇лъ, петра̀ и҆ па́ѵла',
+    '08-06': 'Преѡбраже́нїе гдⷭ҇а бг҃а и҆ сп҃са на́шегѡ і҆и҃са хрⷭ҇та̀',
+    '08-15': 'Ѹ҆спе́нїе прест҃ы́ѧ влⷣчцы на́шеѧ бцⷣы, и҆ приснодв҃ы мр҃і́и',
+    '08-29': 'Ѹ҆сѣкнове́нїе чтⷭ҇ны́ѧ главы̀ чтⷭ҇на́гѡ сла́внагѡ прⷪ҇ро́ка предте́чи и҆ крⷭ҇ти́телѧ і҆ѡа́нна',
+    '09-08': 'Ржⷭ҇тво̀ прест҃ы́ѧ влⷣчцы на́шеѧ бцⷣы, и҆ приснодв҃ы мр҃і́и',
+    '09-14': 'Воздви́женїе чⷭ҇тна́гѡ и҆ животворѧ́щагѡ крⷭ҇та̀',
+    '10-01': 'Покро́въ прест҃ы́ѧ влⷣчцы на́шеѧ бцⷣы и҆ приснодв҃ы мр҃і́и',
+    '11-21': 'Вхо́дъ во хра́мъ прест҃ы́ѧ влⷣчцы на́шеѧ бцⷣы, и҆ приснодв҃ы мр҃і́и',
+    '12-25': 'Ржⷭ҇тво̀ гдⷭ҇а бг҃а и҆ сп҃са на́шегѡ і҆и҃са хрⷭ҇та̀',
   };
 
   /*
@@ -261,7 +285,7 @@
       const weekIdx = Math.floor(nday / 7) - 1; // 0 = Thomas (week 2), …, 5 = Holy Fathers (week 7)
       const num = weekIdx + 2; // 2–7
       const numeral = toSlavonicNumeral(num);
-      const suffix = ' ' + LIT.afterPascha + (PASCHAL_WEEKS[weekIdx] ? ', ' + PASCHAL_WEEKS[weekIdx] : '');
+      const suffix = ' ' + LIT.afterPascha + (isSunday && PASCHAL_WEEKS[weekIdx] ? ', ' + PASCHAL_WEEKS[weekIdx] : '');
       const prefix = isSunday ? LIT.sunday : LIT.sedmitsa;
       return { prefix, numeral, suffix };
     }
@@ -271,31 +295,21 @@
     }
 
     if (nday >= 49 && nday < 56) {
-      // Pentecost week (Mon–Sat after Pentecost Sunday)
-      return { prefix: LIT.sedmitsa, numeral: 'и҃', suffix: '' };
+      // Sedmitsa 1 after Pentecost (Mon–Sat)
+      return { prefix: LIT.sedmitsa, numeral: 'а҃', suffix: ' ' + LIT.afterPentecost };
     }
 
     // ── Post-Pentecost (nday 56+) ────────────────────────────────────────────
 
     if (nday >= 56) {
-      const weekFromAllSaints = Math.floor((nday - 56) / 7) + 1;
+      const week = Math.floor((nday - 56) / 7) + 1;
 
-      if (weekFromAllSaints === 1) {
-        if (isSunday) {
-          return { prefix: LIT.sunday, numeral: 'а҃', suffix: ' ' + LIT.allSaintsSuffix };
-        } else {
-          // Sedmitsa 2 (Mon–Sat after All Saints)
-          return { prefix: LIT.sedmitsa, numeral: 'в҃', suffix: '' };
-        }
+      if (isSunday) {
+        const suffix = ' ' + LIT.afterPentecost + (week === 1 ? ', ' + LIT.allSaintsSuffix : '');
+        return { prefix: LIT.sunday, numeral: toSlavonicNumeral(week), suffix };
+      } else {
+        return { prefix: LIT.sedmitsa, numeral: toSlavonicNumeral(week + 1), suffix: ' ' + LIT.afterPentecost };
       }
-
-      if (weekFromAllSaints === 2 && isSunday) {
-        return { prefix: LIT.sunday, numeral: 'в҃', suffix: ' ' + LIT.afterAllSaints };
-      }
-
-      // Weeks 2+ (Sunday N, sedmitsa N+1 for weekdays)
-      const n = isSunday ? weekFromAllSaints : weekFromAllSaints + 1;
-      return { prefix: isSunday ? LIT.sunday : LIT.sedmitsa, numeral: toSlavonicNumeral(n), suffix: '' };
     }
 
     // ── Pre-Lenten named weeks (nday -70 to -43) ─────────────────────────────
@@ -365,6 +379,24 @@
   }
 
   /**
+   * Return the great-feast display string for the given date, or '' if none.
+   */
+  function calculateGreatFeast(date) {
+    const julianDate = gregorianToJulian(date);
+    const year = julianDate.getFullYear();
+
+    let pascha = calculatePascha(year);
+    if (julianDate < pascha) pascha = calculatePascha(year - 1);
+    const nday = dayDiff(julianDate, pascha);
+
+    if (GREAT_FEASTS_MOVABLE[nday] !== undefined) return GREAT_FEASTS_MOVABLE[nday];
+
+    const mm = String(julianDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(julianDate.getDate()).padStart(2, '0');
+    return GREAT_FEASTS_FIXED[mm + '-' + dd] || '';
+  }
+
+  /**
    * Render a week info descriptor to a display string
    */
   function renderWeekInfo(info) {
@@ -419,15 +451,27 @@
     container.textContent = text;
   }
 
+  /**
+   * Update line 3: great feast name, if today is a great feast
+   */
+  function updateFeastDisplay() {
+    const container = document.getElementById('great-feast');
+    if (!container) return;
+    const feast = calculateGreatFeast(new Date());
+    container.textContent = feast ? feast + '.' : '';
+  }
+
   // Run when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       updateDateDisplay();
       updateWeekDisplay();
+      updateFeastDisplay();
     });
   } else {
     updateDateDisplay();
     updateWeekDisplay();
+    updateFeastDisplay();
   }
 
 })();

@@ -1,13 +1,15 @@
 ---
-title: "Канѡ̑ны"
+title: "Канѡ́нникъ"
 illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+layout: section.njk
 navigation:
   key: canons
-  title: "Канѡ̑ны"
   parent: library
+  title: "Канѡ́нникъ"
 ---
 
 - [Ка́кѡ подоба́етъ глаго́лати канѡ̑ны ѻ҆со́бь](standalone/)
+<!-- - [Служба общая Господу (из канонника)](godservice/) -->
 
 <div class="toc-divider"></div>
 
@@ -37,8 +39,8 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Канѡ́нъ за є҆диноѹ҆ме́ршаго](deceasedman/)
-- [Канѡ́нъ за є҆диноѹ҆ме́ршꙋю](deceasedwoman/)
+- [Канѡ́нъ за є҆диноꙋме́ршаго](deceasedman/)
+- [Канѡ́нъ за є҆диноꙋме́ршꙋю](deceasedwoman/)
 - [Канѡ́нъ ѡ҆ ѹ҆со́пшихъ](deceasedmany/)
 - [Канѡ́нъ за болѧ́щаго](achingman/)
 - [Канѡ́нъ за болѧ́щꙋю](achingwoman/)
@@ -76,6 +78,5 @@ navigation:
 - [Канон Покрова Богородицы](protection/)
 - [Канон Спиридону Тримифунтскому](spiridon/)
 - [Канон об усопшем](deceased/)
-- [Канѡ́нъ за є҆диноѹ҆ме́ршаго[ꙋю]](deceased/)
 
 -->

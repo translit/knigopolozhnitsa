@@ -2,6 +2,7 @@
 title: "Ѱалти́рь,"
 subtitle: "дв҃да прⷪ҇ро́ка и҆ царѧ̀ пѣ́снь."
 illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+layout: section.njk
 navigation:
   key: psalter
   title: "Ѱалти́рь"
@@ -13,26 +14,28 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Каѳі́сма а҃ (а҃-и҃)](kathisma01/)
-- [Каѳі́сма в҃ (ѳ҃-ѕ҃і)](kathisma02/)
-- [Каѳі́сма г҃ (з҃і-к҃г)](kathisma03/)
-- [Каѳі́сма д҃ (к҃д-л҃а)](kathisma04/)
-- [Каѳі́сма є҃ (л҃в-л҃ѕ)](kathisma05/)
-- [Каѳі́сма ѕ҃ (л҃з-м҃є)](kathisma06/)
-- [Каѳі́сма з҃ (м҃ѕ-н҃д)](kathisma07/)
-- [Каѳі́сма и҃ (н҃є-ѯ҃г)](kathisma08/)
-- [Каѳі́сма ѳ҃ (ѯ҃д-ѯ҃ѳ)](kathisma09/)
-- [Каѳі́сма і҃ (ѻ҃-ѻ҃ѕ)](kathisma10/)
-- [Каѳі́сма а҃і (ѻ҃з-п҃д)](kathisma11/)
-- [Каѳі́сма в҃і (п҃є-ч҃)](kathisma12/)
-- [Каѳі́сма г҃і (ч҃а-р҃)](kathisma13/)
-- [Каѳі́сма д҃і (р҃а-р҃д)](kathisma14/)
-- [Каѳі́сма є҃і (р҃є-р҃и)](kathisma15/)
-- [Каѳі́сма ѕ҃і (р҃ѳ-рз҃і)](kathisma16/)
-- [Каѳі́сма з҃і (ри҃і)](kathisma17/)
-- [Каѳі́сма и҃і (рѳ҃і-рл҃г)](kathisma18/)
-- [Каѳі́сма ѳ҃і (рл҃д-рм҃в)](kathisma19/)
-- [Каѳі́сма к҃ (рм҃г-рн҃а)](kathisma20/)
+<ul>
+<li><a href="kathismas/01/">Каѳі́сма а҃ <rubric class="inline">[а҃–и҃]</rubric></a></li>
+<li><a href="kathismas/02/">Каѳі́сма в҃ <rubric class="inline">[ѳ҃–ѕ҃і]</rubric></a></li>
+<li><a href="kathismas/03/">Каѳі́сма г҃ <rubric class="inline">[з҃і–к҃г]</rubric></a></li>
+<li><a href="kathismas/04/">Каѳі́сма д҃ <rubric class="inline">[к҃д–л҃а]</rubric></a></li>
+<li><a href="kathismas/05/">Каѳі́сма є҃ <rubric class="inline">[л҃в–л҃ѕ]</rubric></a></li>
+<li><a href="kathismas/06/">Каѳі́сма ѕ҃ <rubric class="inline">[л҃з–м҃є]</rubric></a></li>
+<li><a href="kathismas/07/">Каѳі́сма з҃ <rubric class="inline">[м҃ѕ–н҃д]</rubric></a></li>
+<li><a href="kathismas/08/">Каѳі́сма и҃ <rubric class="inline">[н҃є–ѯ҃г]</rubric></a></li>
+<li><a href="kathismas/09/">Каѳі́сма ѳ҃ <rubric class="inline">[ѯ҃д–ѯ҃ѳ]</rubric></a></li>
+<li><a href="kathismas/10/">Каѳі́сма і҃ <rubric class="inline">[ѻ҃–ѻ҃ѕ]</rubric></a></li>
+<li><a href="kathismas/11/">Каѳі́сма а҃і <rubric class="inline">[ѻ҃з–п҃д]</rubric></a></li>
+<li><a href="kathismas/12/">Каѳі́сма в҃і <rubric class="inline">[п҃є–ч҃]</rubric></a></li>
+<li><a href="kathismas/13/">Каѳі́сма г҃і <rubric class="inline">[ч҃а–р҃]</rubric></a></li>
+<li><a href="kathismas/14/">Каѳі́сма д҃і <rubric class="inline">[р҃а–р҃д]</rubric></a></li>
+<li><a href="kathismas/15/">Каѳі́сма є҃і <rubric class="inline">[р҃є–р҃и]</rubric></a></li>
+<li><a href="kathismas/16/">Каѳі́сма ѕ҃і <rubric class="inline">[р҃ѳ–рз҃і]</rubric></a></li>
+<li><a href="kathismas/17/">Каѳі́сма з҃і <rubric class="inline">[ри҃і]</rubric></a></li>
+<li><a href="kathismas/18/">Каѳі́сма и҃і <rubric class="inline">[рѳ҃і–рл҃г]</rubric></a></li>
+<li><a href="kathismas/19/">Каѳі́сма ѳ҃і <rubric class="inline">[рл҃д–рм҃в]</rubric></a></li>
+<li><a href="kathismas/20/">Каѳі́сма к҃ <rubric class="inline">[рм҃г–рн҃а]</rubric></a></li>
+</ul>
 
 <div class="toc-divider"></div>
 

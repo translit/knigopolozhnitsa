@@ -8,9 +8,10 @@ navigation:
   order: 0
 ---
 
+- [Молитвосло́въ](prayers/)
+- [А҆ка́ѳїстникъ](akathists/)
 - [Богослꙋже́нїе](service/)
-- [А҆ка́ѳїсты](akathists/)
+- [Канѡ́нникъ](canons/)
 - [Ѱалти́рь](psalter/)
-- [Канѡ̑ны](canons/)
-- [Мл҃твы](prayers/)
+- [Бі́блїа](bible/)
 - [И҆́но](various/)
