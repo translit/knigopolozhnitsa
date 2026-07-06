@@ -1,19 +1,12 @@
 {% extends "_base.njk" %}
+{% from "_partials/title.njk" import title as renderTitle %}
 
-{% set bodyClass = "church-slavonic work" %}
+{% set bodyClass = bodyClass or "church-slavonic work" %}
 
 {% block content %}
-{% if illustration %}
-  {% illustration illustration, illustrationSize %}
-{% endif %}
-<h1>
-  {% if subtitle %}
-    <span class="title-main">{{ title | safe }}</span>
-    <span class="title-subtitle">{{ subtitle | safe }}</span>
-  {% else %}
-    {{ title | safe }}
-  {% endif %}
-</h1>
+{% set _orn = ornament or "headpiece-l2" %}
+{% if _orn %}{% ornament _orn %}{% endif %}
+{{ renderTitle(title) }}
 
 <nav class="work-chapters">
     {{ content | safe }}

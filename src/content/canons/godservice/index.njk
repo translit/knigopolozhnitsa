@@ -1,9 +1,9 @@
 ---
-title: "Служба общая Господу (из канонника)."
+title: '<span class="display">Слꙋ́жба ѻ҆́бща</span><br>по всѧ̑ дни̑ ко гдⷭ҇ꙋ на́шемꙋ і҆и҃сꙋ хрⷭ҇тꙋ̀.'
 layout: work.njk
 navigation:
-  key: service-godservice
-  title: "Служба общая Господу (из канонника)"
+  key: canons-godservice
+  title: "Слꙋ́жба ѻ҆́бща гдⷭ҇ꙋ"
   parent: canons
 ---
 
@@ -16,7 +16,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

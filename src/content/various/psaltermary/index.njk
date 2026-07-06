@@ -1,9 +1,8 @@
 ---
-title: "Ѱалти́рь бж҃їей мт҃ри."
-subtitle: "Хрⷭ҇тїа́нскїе пѣснопѣ́нїѧ прⷭ҇нодв҃ѣ м҃рїи бцⷣѣ, соста́вленные по подо́бїю ѱалмѡ́въ ст҃и́телемъ дими́трїемъ росто́вскимъ."
+title: '<span class="display">Ѱалти́рь бж҃їей мт҃ри.</span><br>Хрⷭ҇тїа́нскїе пѣснопѣ́нїѧ прⷭ҇нодв҃ѣ м҃рїи бцⷣѣ, соста́вленные по подо́бїю ѱалмѡ́въ ст҃и́телемъ дими́трїемъ росто́вскимъ.'
 layout: work.njk
 navigation:
-  key: prayers-psaltermary
+  key: various-psaltermary
   title: "Ѱалти́рь бж҃їей мт҃ри"
   parent: various
 ---
@@ -17,7 +16,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

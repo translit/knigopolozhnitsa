@@ -1,1 +1,5 @@
-{ "layout": "chapter.njk" }
+{
+  "layout": "leaf.njk",
+  "noSwipe": true,
+  "ornament": "headpiece-l3"
+}

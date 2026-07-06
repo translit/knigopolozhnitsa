@@ -1,7 +1,7 @@
 ---
-title: "Пентикоста́рїонъ"
-subtitle: "сі́есть пѧтьдесѧ́тница<br>съ бг҃мъ ст҃ы́мъ, ѡ҆бдержа́й подоба́ющее є҆мꙋ̀ послѣ́дованїе."
+title: '<span class="display">Пентикоста́рїонъ</span><br>сі́есть пѧтьдесѧ́тница,<br>съ бг҃мъ ст҃ы́мъ, ѡ҆бдержа́й подоба́ющее є҆мꙋ̀ послѣ́дованїе.'
 layout: work.njk
+ornament: headpiece-l2
 tocDividers:
   - "1"
   - "6"
@@ -11,7 +11,7 @@ tocDividers:
   - "13"
   - "15"
   - "17"
-  - "21"
+  - "20"
   - "23"
   - "24"
 navigation:
@@ -29,7 +29,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

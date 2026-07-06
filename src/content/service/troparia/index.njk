@@ -1,0 +1,26 @@
+---
+title: '<span class="display">Тропарѝ,</span><br>кондакѝ, задосто́йники и҆ велича̑нїѧ.'
+layout: work.njk
+ornament: headpiece-l2
+navigation:
+  key: service-troparia
+  title: "Тропарѝ, кондакѝ, задосто́йники и҆ велича̑нїѧ"
+  parent: service
+---
+
+{% set parts = [] %}
+{% for part in collections.serviceParts %}
+  {% if part.inputPath.includes('/service/troparia/') %}
+    {% set parts = (parts.push(part), parts) %}
+  {% endif %}
+{% endfor %}
+
+<ul class="work-toc">
+{% for slug in ["festal", "daily", "general"] %}
+  {% for part in parts %}
+    {% if part.fileSlug == slug %}
+      <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title }}</a></li>
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+</ul>

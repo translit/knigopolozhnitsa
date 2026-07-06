@@ -1,16 +1,14 @@
 {% extends "_base.njk" %}
+{% from "_partials/title.njk" import title as renderTitle %}
+{% from "_partials/julian-date.njk" import julianDate, julianDateScript %}
 
-{% set bodyClass = "homepage" %}
+{% set bodyClass = bodyClass or "homepage" %}
 
 {% block content %}
-{% illustration "bars-headers-fullpage/header-illumination-gould" %}
-<h1>{{ title | safe }}</h1>
+{% ornament "library-home", "xlarge" %}
+{{ renderTitle(title) }}
 
-{% if showJulianDate %}
-<div id="julian-date"></div>
-<div id="liturgical-week"></div>
-<div id="great-feast"></div>
-{% endif %}
+{{ julianDate(show=showJulianDate, full=true) }}
 
 <nav class="homepage-nav">
     {{ content | safe }}
@@ -18,7 +16,5 @@
 
 <div class="homepage-cross">※</div>
 
-{% if showJulianDate %}
-<script src="/assets/js/julian-date.js"></script>
-{% endif %}
+{{ julianDateScript(show=showJulianDate) }}
 {% endblock %}

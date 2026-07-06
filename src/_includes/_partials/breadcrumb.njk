@@ -1,0 +1,11 @@
+{% macro breadcrumb(collections, navKey) %}
+{% for crumb in collections.all | customBreadcrumbs(navKey) %}
+    {% set _label = crumb.data.navigation.title or crumb.data.title %}
+    {% if not loop.first %} › {% endif %}
+    {% if loop.last %}
+        <span aria-current="page">{{ _label | safe }}</span>
+    {% else %}
+        <a href="{{ crumb.url }}">{{ _label | safe }}</a>
+    {% endif %}
+{% endfor %}
+{% endmacro %}

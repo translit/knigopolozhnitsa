@@ -1,7 +1,6 @@
 ---
-title: "Ѱалти́рь,"
-subtitle: "дв҃да прⷪ҇ро́ка и҆ царѧ̀ пѣ́снь."
-illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+title: '<span class="display">Ѱалти́рь,</span><br>дв҃да прⷪ҇ро́ка и҆ царѧ̀ пѣ́снь.'
+ornament: "headpiece-l1"
 layout: section.njk
 navigation:
   key: psalter

@@ -1,11 +1,16 @@
 ---
-title: "Мине́ѧ"
-subtitle: "ѻ҆́бщаѧ."
+title: '<span class="display">Мине́ѧ</span><br>ѻ҆́бщаѧ.'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: service-menaiontotal
   title: "Мине́ѧ ѻ҆́бщаѧ"
   parent: service
+tocDividers:
+  - "1"
+  - "30"
+  - "37"
+  - "39"
 ---
 
 {% set unsortedParts = [] %}
@@ -17,7 +22,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

@@ -1,7 +1,7 @@
 ---
-title: "Добротолю́бїе,"
-subtitle: "и҆лѝ словеса̀ и҆ глави̑зны сщ҃е́ннагѡ трезвѣ́нїѧ.<br><span style='font-size: var(--text-size-small);'>Сѡ́бранныѧ ѿ писа́нїй ст҃ы́хъ и҆ бг҃одх҃нове́нныхъ ѻ҆тє́цъ, въ ни́мже нра́вственнымъ по дѣѧ́нїю, и҆ ѹ҆мозрѣ́нїю любомꙋ́дремъ ѹ҆́мъ ѡ҆чища́етсѧ, просвѣща́етсѧ и҆ соверше́нъ быва́етъ.</span>"
+title: '<span class="display">Добротолю́бїе,</span><br>и҆лѝ словеса̀ и҆ глави̑зны сщ҃е́ннагѡ трезвѣ́нїѧ.<br><span style="font-size: var(--text-size-small);">Сѡ́бранныѧ ѿ писа́нїй ст҃ы́хъ и҆ бг҃одх҃нове́нныхъ ѻ҆тє́цъ, въ ни́мже нра́вственнымъ по дѣѧ́нїю, и҆ ѹ҆мозрѣ́нїю любомꙋ́дремъ ѹ҆́мъ ѡ҆чища́етсѧ, просвѣща́етсѧ и҆ соверше́нъ быва́етъ.</span>'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: various-philokalia
   title: "Добротолю́бїе"
@@ -46,7 +46,7 @@ tocDividers:
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

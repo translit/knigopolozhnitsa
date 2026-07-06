@@ -1,5 +1,5 @@
 ---
-title: "Книгополо́жница"
+title: '<span class="display">Книгополо́жница</span>'
 layout: home.njk
 showJulianDate: true
 navigation:

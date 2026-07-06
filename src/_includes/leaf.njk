@@ -1,0 +1,15 @@
+{% extends "_base.njk" %}
+{% from "_partials/title.njk" import title as renderTitle %}
+
+{% set bodyClass = bodyClass or "church-slavonic leaf" %}
+
+{% block content %}
+{% set _orn = ornament %}
+{% if _orn %}{% ornament _orn %}{% endif %}
+{% if title and not hideTitle %}
+{{ renderTitle(title) }}
+{% endif %}
+<article class="liturgical-text">
+    {{ content | safe }}
+</article>
+{% endblock %}

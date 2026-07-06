@@ -1,7 +1,7 @@
 ---
-title: "Мл҃твы бцⷣе"
-subtitle: "всеѧ́ седми́цы."
+title: '<span class="display">Мл҃твы бцⷣе</span><br>всеѧ́ седми́цы.'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: prayers-virgindaily
   title: "Мл҃твы бцⷣе всеѧ́ седми́цы"
@@ -17,7 +17,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

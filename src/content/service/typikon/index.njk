@@ -1,7 +1,7 @@
 ---
-title: "Тѷпїко́нъ,"
-subtitle: "си́рѣчь,<br> и҆з̾ѡбраже́нїе цр҃ко́внагѡ послѣ́дованїѧ во і҆ерⷭ҇ли́мѣ ст҃ы́ѧ ла́ѵры, прпⷣбнагѡ и҆ бг҃оно́снагѡ ѻ҆тца̀ на́шегѡ са́ввы."
+title: '<span class="display">Тѷпїко́нъ,</span><br>си́рѣчь,<br> и҆з̾ѡбраже́нїе цр҃ко́внагѡ послѣ́дованїѧ во і҆ерⷭ҇ли́мѣ ст҃ы́ѧ ла́ѵры, прпⷣбнагѡ и҆ бг҃оно́снагѡ ѻ҆тца̀ на́шегѡ са́ввы.'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: service-typikon
   title: "Тѷпїко́нъ"
@@ -31,7 +31,7 @@ tocSections:
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.title | safe }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

@@ -1,6 +1,6 @@
 ---
-title: "Молитвосло́въ"
-illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+title: '<span class="display">Молитвосло́въ</span>'
+ornament: "headpiece-l1"
 navigation:
   key: prayers
   title: "Молитвосло́въ"
@@ -9,11 +9,12 @@ navigation:
 
 - [Послѣ́дованїе ко ст҃о́мꙋ причаще́нїю](communion/)
 - [Бл҃года́рствєнныѧ мл҃твы](thanks/)
-- [Мл҃твы ра̑зныѧ](various/)
 - [Мл҃твы ѹ҆́трєннїѧ](morning/)
 - [Мл҃твы на со́нъ грѧдꙋ́щымъ](evening/)
 - [Часы̀ ст҃ы́ѧ па́схи](easter/)
 - [Пра́вило ѿ ѡ҆скверне́нїѧ](pollution/)
+- [Послѣ́дованїе і҆ере́йское ко ст҃о́мꙋ причаще́нїю](oblationpriest/)
+- [Мл҃твы ра̑зныѧ](various/)
 
 <div class="toc-divider"></div>
 
@@ -25,7 +26,3 @@ navigation:
 - [Мл҃твы ст҃ы́мъ, септе́мврїй‐деке́мврій](saintssepdec/)
 - [Мл҃твы ст҃ы́мъ, і҆анꙋа́рій‐апри́лїй](saintsjanapr/)
 - [Мл҃твы ст҃ы́мъ, ма́їй‐а҆́вгꙋстъ](saintsmayaug/)
-
-<div class="toc-divider"></div>
-
-- [Послѣ́дованїе і҆ере́йское ко ст҃о́мꙋ причаще́нїю](oblationpriest/)

@@ -1,6 +1,6 @@
 ---
-title: "Богослꙋже́нїе"
-illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+title: '<span class="display">Богослꙋже́нїе</span>'
+ornament: "headpiece-l1"
 navigation:
   key: service
   title: "Богослꙋже́нїе"
@@ -42,7 +42,7 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Слꙋже́бникъ](service/)
+- [Слꙋже́бникъ](hieratikon/)
 
 <div class="toc-divider"></div>
 
@@ -65,12 +65,4 @@ navigation:
 
 <div class="toc-divider"></div>
 
-- [Тропари̑ и҆ вєлича̑ніѧ ѻ҆́бщїи](tropariagen/)
-- [Тропарѝ и҆ кондакѝ во всѧ̑ дни̑](tropariadaily/)
-- [Тропарѝ, кондакѝ, задосто́йники и҆ велича̑нїѧ пра́здникѡмъ](troparia12/)
-
-<!--
-- [Тѷпїко́нъ, ча́сть ѻ҆́бщаѧ](typikontotal/)
-- [Тѷпїко́нъ, ча́сть ча́стнаѧ](typikonspecial/)
-- [Тѷпїко́нъ, дополне́нїѧ](typikonadditional/)
--->
+- [Тропарѝ](troparia/)

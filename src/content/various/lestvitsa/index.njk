@@ -1,6 +1,5 @@
 ---
-title: "Лѣ́ствица"
-subtitle: "і҆́же во ст҃ы́хъ ѻ҆ц҃а̀ на́шегѡ і҆ѡа́нна."
+title: '<span class="display">Лѣ́ствица</span><br>і҆́же во ст҃ы́хъ ѻ҆ц҃а̀ на́шегѡ і҆ѡа́нна.'
 layout: work.njk
 navigation:
   key: various-lestvitsa
@@ -26,7 +25,7 @@ source: Перевод прп. Паисия (Величковского), typiko
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

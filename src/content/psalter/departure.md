@@ -1,11 +1,10 @@
 ---
-title: "Послѣ́дованїе"
-subtitle: "по и҆схо́дѣ дꙋшѝ ѿ тѣ́ла."
+title: '<span class="display">Послѣ́дованїе</span><br>по и҆схо́дѣ дꙋшѝ ѿ тѣ́ла.'
 navigation:
   key: psalter-departure
   title: "Послѣ́дованїе по и҆схо́дѣ дꙋшѝ ѿ тѣ́ла"
   parent: psalter
-type: "psalter"
+type: psalter
 ---
 
 <rubric>И҆зше́дшей ѹ҆́бѡ дꙋшѝ ѿ тѣ́ла, а҆́бїе і҆ере́й начина́етъ:</rubric>
@@ -196,4 +195,4 @@ type: "psalter"
 
 <rubric class="inline">Ѿпѣ́вше же три́жды:</rubric> <red>В</red>ѣ́чнаѧ па́мѧть. <rubric class="inline">И҆ ѿхо́дѧтъ во своѧ̑ си.</rubric>
 
-{% illustration "small-ornaments/golgotha-cross-small-gould", "small" %}
+{% ornament "tailpiece-01", "medium" %}

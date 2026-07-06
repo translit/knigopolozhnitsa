@@ -8,6 +8,62 @@
    ========================================================================== */
 
 @font-face {
+  font-family: 'Acathist';
+  src: url('/assets/fonts/Acathist-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cathisma';
+  src: url('/assets/fonts/Cathisma-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fedorovsk';
+  src: url('/assets/fonts/Fedorovsk-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Indiction';
+  src: url('/assets/fonts/Indiction-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Oglavie';
+  src: url('/assets/fonts/Oglavie-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pochaevsk';
+  src: url('/assets/fonts/Pochaevsk-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pomorsky';
+  src: url('/assets/fonts/Pomorsky-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ponomar';
+  src: url('/assets/fonts/Ponomar-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Triodion';
   src: url('/assets/fonts/Triodion-Regular.woff2') format('woff2');
   font-weight: normal;
@@ -22,8 +78,8 @@
 }
 
 @font-face {
-  font-family: 'Oglavie';
-  src: url('/assets/fonts/Oglavie-Regular.woff2') format('woff2');
+  font-family: 'Vilnius';
+  src: url('/assets/fonts/Vilnius-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -42,11 +98,28 @@
   --link-color: #0066cc;
   --link-hover-color: #004499;
 
-  /* Fonts */
-  --triodion-font: 'Triodion', serif;
-  --oglavie-font: 'Oglavie', var(--triodion-font);
-  --vertograd-font: 'Vertograd', var(--triodion-font);
-  --system-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  /* Fonts — physical tier: names the typeface. Change the file/fallback here.
+     Triodion first — others fall back to it for glyph coverage.
+     To trial a candidate as body, set --font-body in the semantic tier below. */
+  --font-triodion:  'Triodion', serif;
+  --font-acathist:  'Acathist',  var(--font-triodion);
+  --font-cathisma:  'Cathisma',  var(--font-triodion);
+  --font-fedorovsk: 'Fedorovsk', var(--font-triodion);
+  --font-indiction: 'Indiction', var(--font-triodion);
+  --font-oglavie:   'Oglavie',   var(--font-triodion);
+  --font-pochaevsk: 'Pochaevsk', var(--font-triodion);
+  --font-pomorsky:  'Pomorsky',  var(--font-triodion);
+  --font-ponomar:   'Ponomar',   var(--font-triodion);
+  --font-vertograd: 'Vertograd', var(--font-triodion);
+  --font-vilnius:   'Vilnius',   var(--font-triodion);
+  --font-system:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+  /* Fonts — semantic tier: names the role. Repoint a role to a different
+     typeface here, in one place. Stylesheet body uses ONLY these. */
+  --font-body:    var(--font-triodion);   /* paragraphs, headings, rubrics, nav, all reading text — trial: var(--font-ponomar) / var(--font-pochaevsk) / var(--font-acathist) */
+  --font-display: var(--font-oglavie);    /* large title display span */
+  --font-versal:  var(--font-vertograd);  /* drop caps */
+  --font-ui:      var(--font-system);     /* nav buttons, breadcrumbs, triangles */
 
   /* Typography sizes */
   --text-size-base: 1.75rem;
@@ -64,12 +137,16 @@
   --spacing-small: 1rem;
   --spacing-large: 2rem;
 
-  /* Illustration sizes */
-  --illustration-size-xsmall: 2rem;
-  --illustration-size-small: 3rem;
-  --illustration-size-medium: 4.5rem;
-  --illustration-size-large: 6.75rem;
-  --illustration-size-xlarge: 10.125rem;
+  /* Ornament sizes. Most scale with --text-size-large (illumination model: ornaments
+     grow with text on tablets). Exception: large is fixed at 18rem so L3 headpieces
+     stay below the mobile container even when the coarse media query inflates xlarge
+     past the container — this is the only change needed to maintain L2 > L3 on mobile.
+     Square bounding box; all ornaments are landscape so width is the binding dimension. */
+  --ornament-size-xsmall: calc(var(--text-size-large) * 1);
+  --ornament-size-small:  calc(var(--text-size-large) * 1.667);
+  --ornament-size-medium: calc(var(--text-size-large) * 2.667);
+  --ornament-size-large:  min(18rem, 72vw);
+  --ornament-size-xlarge: calc(var(--text-size-large) * 6);
 
   /* Line heights */
   --line-height-tight: 1.3;
@@ -105,8 +182,12 @@ versal {
    BASE STYLES
    ========================================================================== */
 
+html {
+  scrollbar-gutter: stable both-edges; /* prevent layout shift; both-edges keeps centered layout symmetric */
+}
+
 body {
-  font-family: var(--system-font);
+  font-family: var(--font-ui);
   font-size: 24px;
   line-height: var(--line-height-base);
   color: var(--text-color);
@@ -125,42 +206,35 @@ main {
    SIMPLIFIED HEADING & NAVIGATION SYSTEM
    ========================================================================== */
 
-/* Page titles - decorative Oglavie font */
+/* Page titles — all layouts: Triodion base; display font via .display span */
 .homepage > main > h1,
 .section > main > h1,
-.work > main > h1 {
-  font-family: var(--oglavie-font);
-  font-size: var(--text-size-large);
+.work > main > h1,
+.leaf > main > h1 {
+  font-family: var(--font-body);
+  font-size: var(--text-size-base);
   font-weight: normal;
   line-height: var(--line-height-tight);
-  letter-spacing: 0.03em;
   color: var(--red-color);
   text-align: center;
   margin: var(--spacing-base) 0;
 }
 
-/* Page title parts - for pages with subtitle */
-.homepage > main > h1 .title-main,
-.section > main > h1 .title-main,
-.work > main > h1 .title-main {
+/* Display-font span inside any page-title h1 */
+.homepage > main > h1 .display,
+.section > main > h1 .display,
+.work > main > h1 .display,
+.leaf > main > h1 .display {
+  font-family: var(--font-display);
   font-size: var(--text-size-large);
-  display: block;
-  margin-bottom: 0.5rem;
-}
-
-.homepage > main > h1 .title-subtitle,
-.section > main > h1 .title-subtitle,
-.work > main > h1 .title-subtitle {
-  font-family: var(--triodion-font);
-  font-size: var(--text-size-base);
-  display: block;
-  letter-spacing: normal;
+  letter-spacing: 0.03em;
+  display: inline-block;
+  margin-bottom: 0.3rem;
 }
 
 /* Liturgical content headings - these stay as-is */
-article.liturgical-text h1,
-.chapter h1 {
-  font-family: var(--triodion-font);
+article.liturgical-text h1 {
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   font-weight: normal;
   line-height: var(--line-height-tight);
@@ -169,15 +243,14 @@ article.liturgical-text h1,
   margin: var(--spacing-base) 0;
 }
 
-.chapter h1.oglavie {
-  font-family: var(--oglavie-font);
-  font-size: var(--text-size-large);
+.display {
+  font-family: var(--font-display);
   letter-spacing: 0.03em;
 }
 
 article.liturgical-text h2,
-.chapter h2 {
-  font-family: var(--triodion-font);
+.leaf h2 {
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   font-weight: normal;
   line-height: var(--line-height-tight);
@@ -203,7 +276,7 @@ article.liturgical-text h2,
 .homepage nav li,
 .section nav li,
 .work-toc li {
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   font-weight: normal;
   line-height: var(--line-height-tight);
@@ -217,7 +290,7 @@ article.liturgical-text h2,
 
 .work-toc .toc-major-section {
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.05em;
   color: var(--red-color);
   margin-top: var(--spacing-large);
 }
@@ -247,7 +320,7 @@ article.liturgical-text h2,
 
 /* Bible book chapter TOC */
 .book-toc {
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-base);
   overflow-wrap: break-word;
@@ -263,7 +336,7 @@ article.liturgical-text h2,
    ========================================================================== */
 
 p {
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: var(--line-height-base);
   margin: var(--spacing-base) 0;
@@ -277,7 +350,7 @@ p {
 versal {
   display: block;
   float: left;
-  font-family: var(--vertograd-font);
+  font-family: var(--font-versal);
   font-size: var(--versal-size);
   line-height: 1;
   margin-right: 0.08em;
@@ -306,7 +379,7 @@ p:has(+ p versal[data-diacritics="true"]),
 h2:has(+ p versal[data-diacritics="true"]),
 p:has(rubric):has(+ p versal[data-diacritics="true"]),
 details:has(+ p versal[data-diacritics="true"]),
-details:has(> p versal[data-diacritics="true"]) > summary {
+details[open]:has(> p versal[data-diacritics="true"]) > summary {
   margin-bottom: var(--versal-diacritic-margin);
 }
 
@@ -358,12 +431,16 @@ vl {
 
 rubric {
   display: block;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-base);
   color: var(--red-color);
   margin: var(--spacing-base) 0;
   text-align: left;
+}
+
+rubric.centered {
+  text-align: center;
 }
 
 rubric.inline {
@@ -436,7 +513,7 @@ rubric .liturgical-text {
 incipit,
 acrostic {
   display: inline;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   line-height: var(--line-height-base);
   color: var(--text-color);
   margin: 0;
@@ -451,7 +528,7 @@ rubric acrostic {
 /* Podoben (musical tone pattern indicators) */
 podoben {
   display: inline;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-xsmall);
   line-height: var(--line-height-base);
   color: var(--red-color);
@@ -464,10 +541,23 @@ podoben:has(+ rubric.inline) {
   font-size: var(--text-size-small);
 }
 
+/* Pair podoben tightly with its preceding rubric-only paragraph so the two read as one block. */
+p:has(> rubric:only-child) + p:has(> podoben) {
+  margin-top: 0;
+  line-height: var(--line-height-tight);
+}
+p:has(> rubric:only-child):has(+ p > podoben) {
+  margin-bottom: 0;
+  line-height: var(--line-height-tight);
+}
+p:has(> rubric:only-child):has(+ p > podoben) > rubric {
+  margin-bottom: 0;
+}
+
 /* Refrain (liturgical text, same size as rubrics but black) */
 refrain {
   display: inline;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-base);
   color: var(--text-color);
@@ -506,7 +596,7 @@ mc::before {
 /* Irmos (liturgical text, same size as rubrics but black) */
 irmos {
   display: inline;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-base);
   color: var(--text-color);
@@ -532,7 +622,7 @@ p:has(refrain) {
    ========================================================================== */
 
 .verse {
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: var(--line-height-base);
   margin: var(--spacing-base) 0;
@@ -573,17 +663,22 @@ a[href^="#ref"] {
 #julian-date,
 #liturgical-week,
 #current-tone,
-#great-feast {
+#great-feast,
+#daily-readings {
   text-align: center;
   font-size: var(--text-size-small);
   margin: var(--spacing-base) 0;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   color: var(--red-color);
 }
 
 #julian-date     { margin-bottom: 0; }
 #liturgical-week { margin-top: 0; margin-bottom: 0; }
-#great-feast     { margin-top: 0; }
+#great-feast     { margin-top: 0; margin-bottom: 0; }
+#daily-readings  { margin-top: 0; }
+#daily-readings:empty { margin: 0; }
+#daily-readings a { color: inherit; }
+#daily-readings a:hover { color: var(--red-hover-color); border-bottom-color: var(--red-hover-color); }
 
 .homepage-cross {
   text-align: center;
@@ -592,7 +687,7 @@ a[href^="#ref"] {
   font-size: var(--text-size-base);
   line-height: 1;
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-variant-emoji: text;
 }
 
@@ -600,7 +695,7 @@ a[href^="#ref"] {
   text-align: center;
   margin: var(--spacing-small) 0;
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: 1;
 }
@@ -621,7 +716,7 @@ h2 + .toc-divider {
   text-align: center;
   margin: var(--spacing-base) 0;
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-large);
 }
 
@@ -629,27 +724,29 @@ h2 + .toc-divider {
   content: "⁜";
 }
 
-/* SVG Illustrations */
-.illustration {
+/* SVG Ornaments */
+.ornament {
   text-align: center;
   margin: var(--spacing-base) 0;
   color: var(--red-color);
 }
 
-/* Single spacing-base gap when h1 follows illustration */
-.homepage .illustration:has(+ h1),
-.section .illustration:has(+ h1),
-.work .illustration:has(+ h1) {
+/* Single spacing-base gap when h1 follows ornament */
+.homepage .ornament:has(+ h1),
+.section .ornament:has(+ h1),
+.work .ornament:has(+ h1),
+.leaf .ornament:has(+ h1) {
   margin-bottom: 0;
 }
 
-.homepage .illustration + h1,
-.section .illustration + h1,
-.work .illustration + h1 {
+.homepage .ornament + h1,
+.section .ornament + h1,
+.work .ornament + h1,
+.leaf .ornament + h1 {
   margin-top: var(--spacing-base);
 }
 
-.illustration svg {
+.ornament svg {
   display: block;
   margin: 0 auto;
   max-width: 100%;
@@ -657,28 +754,33 @@ h2 + .toc-divider {
   fill: currentColor;
 }
 
-.illustration-xsmall svg {
-  max-width: var(--illustration-size-xsmall);
+.ornament-xsmall svg {
+  max-width: var(--ornament-size-xsmall);
+  max-height: var(--ornament-size-xsmall);
 }
 
-.illustration-small svg {
-  max-width: var(--illustration-size-small);
+.ornament-small svg {
+  max-width: var(--ornament-size-small);
+  max-height: var(--ornament-size-small);
 }
 
-.illustration-medium svg {
-  max-width: var(--illustration-size-medium);
+.ornament-medium svg {
+  max-width: var(--ornament-size-medium);
+  max-height: var(--ornament-size-medium);
 }
 
-.illustration-large svg {
-  max-width: var(--illustration-size-large);
+.ornament-large svg {
+  max-width: var(--ornament-size-large);
+  max-height: var(--ornament-size-large);
 }
 
-.illustration-xlarge svg {
-  max-width: var(--illustration-size-xlarge);
+.ornament-xlarge svg {
+  max-width: var(--ornament-size-xlarge);
+  max-height: var(--ornament-size-xlarge);
 }
 
-/* Cap unsized illustrations at 25rem; base max-width: 100% still constrains on narrow containers */
-.illustration:not([class*="illustration-"]) svg {
+/* Cap unsized ornaments at 25rem; base max-width: 100% still constrains on narrow containers */
+.ornament:not([class*="ornament-"]) svg {
   width: 25rem;
 }
 
@@ -723,11 +825,18 @@ rubric a,
 /* Breadcrumb navigation */
 .breadcrumb,
 .nav-breadcrumb {
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-feature-settings: inherit;
   font-size: var(--text-size-xsmall);
   margin-bottom: var(--spacing-base);
   margin-top: 0;
+}
+
+/* Prevent display-font span from leaking into breadcrumb labels */
+.breadcrumb .display,
+.nav-breadcrumb .display {
+  font-family: inherit;
+  letter-spacing: inherit;
 }
 
 /* Chapter and TOC navigation containers */
@@ -756,7 +865,7 @@ rubric a,
   color: var(--text-color);
   background-color: var(--bg-color);
   transition: all 0.2s ease;
-  font-family: var(--system-font);
+  font-family: var(--font-ui);
   font-size: 1rem;
   min-height: 28px;
   cursor: pointer;
@@ -807,21 +916,21 @@ details summary::marker {
 /* Summary text styling classes - separate triangle and text */
 .summary-red {
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: var(--line-height-tight);
 }
 
 .summary-rubric {
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-tight);
 }
 
 .summary-h1 {
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: var(--line-height-tight);
   font-weight: normal;
@@ -829,7 +938,7 @@ details summary::marker {
 
 .summary-h2 {
   color: var(--red-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-small);
   line-height: var(--line-height-tight);
   font-weight: normal;
@@ -837,7 +946,7 @@ details summary::marker {
 
 .summary-default {
   color: var(--text-color);
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   line-height: var(--line-height-tight);
 }
@@ -875,7 +984,7 @@ summary:has(.summary-default) {
 .work-toc details {
   margin: var(--spacing-large) 0 var(--spacing-small) 0;
   padding: 0;
-  font-family: var(--triodion-font);
+  font-family: var(--font-body);
   font-size: var(--text-size-base);
   font-weight: normal;
   line-height: var(--line-height-tight);
@@ -892,7 +1001,7 @@ summary:has(.summary-default) {
 /* Triangle styling - separate element */
 .triangle {
   color: var(--red-color);
-  font-family: var(--system-font);
+  font-family: var(--font-ui);
   font-size: 0.8em;
   margin-right: 0.5em;
   transition: transform 0.3s ease;
@@ -907,7 +1016,7 @@ details[open] > summary > .triangle {
 /* Fold end marker - appears at bottom of long folds */
 .fold-end-marker {
   color: var(--red-color);
-  font-family: var(--system-font);
+  font-family: var(--font-ui);
   font-size: 0.8em;
   text-align: center;
   margin: 1em 0;
@@ -1019,23 +1128,17 @@ details[open] > *:not(summary) {
   /* Adjust margins for mobile */
   .homepage > main > h1,
   .section > main > h1,
-  .work > main > h1 {
+  .work > main > h1,
+  .leaf > main > h1 {
     margin: var(--spacing-base) 0 var(--spacing-small) 0;
   }
 
-  .homepage > main > h1 .title-main,
-  .section > main > h1 .title-main,
-  .work > main > h1 .title-main {
-    margin-bottom: 0.25rem;
-  }
-
-  article.liturgical-text h1,
-  .chapter h1 {
+  article.liturgical-text h1 {
     margin: var(--spacing-base) 0 var(--spacing-small) 0;
   }
 
   article.liturgical-text h2,
-  .chapter h2 {
+  .leaf h2 {
     margin: var(--spacing-base) 0 0.75rem 0;
   }
 

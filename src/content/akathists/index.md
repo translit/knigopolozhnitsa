@@ -1,6 +1,7 @@
 ---
-title: "А҆ка́ѳїстникъ"
-illustration: "bars-headers-fullpage/russian-interlace-bar-2"
+title: '<span class="display">А҆ка́ѳїстникъ</span>'
+ornament: "headpiece-l1"
+layout: section.njk
 navigation:
   key: akathists
   title: "А҆ка́ѳїстникъ"

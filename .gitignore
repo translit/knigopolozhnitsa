@@ -29,3 +29,6 @@ Thumbs.db
 # Documents
 *.epub
 *.pdf
+
+# Raw source material
+raw/

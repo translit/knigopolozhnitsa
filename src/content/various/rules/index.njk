@@ -1,7 +1,7 @@
 ---
-title: "Кни́га пра́вилъ"
-subtitle: "свѧты́хъ а҆по́столъ, свѧты́хъ собо́рѡвъ вселе́нскихъ и҆ помѣ́стныхъ, и҆ свѧты́хъ ѻ҆тє́цъ."
+title: '<span class="display">Кни́га пра́вилъ</span><br>свѧты́хъ а҆по́столъ, свѧты́хъ собо́рѡвъ вселе́нскихъ и҆ помѣ́стныхъ, и҆ свѧты́хъ ѻ҆тє́цъ.'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: various-rules
   title: "Кни́га пра́вилъ"
@@ -36,7 +36,7 @@ tocSections:
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

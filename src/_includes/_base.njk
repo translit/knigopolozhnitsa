@@ -1,3 +1,4 @@
+{%- set _nm = {navigation: navigation, standalone: standalone, noSwipe: noSwipe, type: type} | navMode -%}
 <!DOCTYPE html>
 <html lang="cu" translate="no">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
     <meta name="robots" content="noindex, nofollow">
-    <title>{{ navigation.title if navigation.title else title | safe }}</title>
+    <title>{{ (navigation.title or title) | striptags }}</title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <meta name="color-scheme" content="light dark">
     <!-- Favicon -->
@@ -14,71 +15,42 @@
     <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png?v=2">
     <meta name="theme-color" content="#fbf5ea" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-    <!-- Add preload hints for navigation -->
-    {% if navigation.key and layout != "single-work.njk" %}
+    {% if _nm == 'chapter' or _nm == 'toc' %}
     {% set chapterNav = collections.all | getChapterNavigation(navigation.key) %}
     {% if chapterNav and chapterNav.next %}
     <link rel="prefetch" href="{{ chapterNav.next.url }}">
     {% endif %}
     {% endif %}
 </head>
+{% from "_partials/breadcrumb.njk" import breadcrumb %}
 <body class="{{ bodyClass }}">
     <main>
         <!-- Breadcrumbs -->
         {% if navigation.key and navigation.key != "library" %}
         <nav class="breadcrumb" aria-label="Breadcrumb">
-            {% for crumb in collections.all | customBreadcrumbs(navigation.key) %}
-                {% if not loop.first %} › {% endif %}
-                {% if loop.last %}
-                    <span aria-current="page">{{ crumb.data.navigation.title | safe }}</span>
-                {% else %}
-                    <a href="{{ crumb.url }}">{{ crumb.data.navigation.title | safe }}</a>
-                {% endif %}
-            {% endfor %}
+            {{ breadcrumb(collections, navigation.key) }}
         </nav>
         {% endif %}
 
         {% block content %}{% endblock %}
 
         <!-- Bottom Navigation -->
-        {% if navigation.key %}
+        {% if _nm != 'none' %}
 
-        <!-- Single works: only show breadcrumbs -->
-        {% if layout == "single-work.njk" %}
+        {% if _nm == 'standalone' %}
         <nav class="toc-navigation" aria-label="Navigation">
             <nav class="nav-breadcrumb" aria-label="Navigation Breadcrumb">
-                {% for crumb in collections.all | customBreadcrumbs(navigation.key) %}
-                    {% if not loop.first %} › {% endif %}
-                    {% if loop.last %}
-                        <span aria-current="page">{{ crumb.data.navigation.title | safe }}</span>
-                    {% else %}
-                        <a href="{{ crumb.url }}">{{ crumb.data.navigation.title | safe }}</a>
-                    {% endif %}
-                {% endfor %}
+                {{ breadcrumb(collections, navigation.key) }}
             </nav>
         </nav>
 
-        <!-- Multi-chapter works: show full navigation -->
-        {% else %}
-
-        <!-- Chapter Navigation (for chapter pages with type and parent) -->
-        {% if type and navigation.parent %}
+        {% elif _nm == 'chapter' %}
         {% set chapterNav = collections.all | getChapterNavigation(navigation.key) %}
         {% if chapterNav %}
         <nav class="chapter-navigation" aria-label="Chapter Navigation">
-            <!-- Breadcrumbs -->
             <nav class="nav-breadcrumb" aria-label="Navigation Breadcrumb">
-                {% for crumb in collections.all | customBreadcrumbs(navigation.key) %}
-                    {% if not loop.first %} › {% endif %}
-                    {% if loop.last %}
-                        <span aria-current="page">{{ crumb.data.navigation.title | safe }}</span>
-                    {% else %}
-                        <a href="{{ crumb.url }}">{{ crumb.data.navigation.title | safe }}</a>
-                    {% endif %}
-                {% endfor %}
+                {{ breadcrumb(collections, navigation.key) }}
             </nav>
-
-            <!-- Navigation Buttons -->
             <div class="nav-grid">
                 {% if chapterNav.previous %}
                 <a href="{{ chapterNav.previous.url }}" class="nav-button nav-prev" rel="prev" aria-label="Go to previous chapter">
@@ -89,7 +61,6 @@
                     ‹
                 </div>
                 {% endif %}
-
                 {% if chapterNav.next %}
                 <a href="{{ chapterNav.next.url }}" class="nav-button nav-next" rel="next" aria-label="Go to next chapter">
                     ›
@@ -103,28 +74,20 @@
         </nav>
         {% endif %}
 
-        <!-- TOC Navigation (for work/TOC pages without type but with navigation.key) -->
-        {% elif not type and navigation.parent %}
+        {% elif _nm == 'toc' %}
         <nav class="toc-navigation" aria-label="TOC Navigation">
-            <!-- Breadcrumbs for TOC pages -->
             <nav class="nav-breadcrumb" aria-label="Navigation Breadcrumb">
-                {% for crumb in collections.all | customBreadcrumbs(navigation.key) %}
-                    {% if not loop.first %} › {% endif %}
-                    {% if loop.last %}
-                        <span aria-current="page">{{ crumb.data.navigation.title | safe }}</span>
-                    {% else %}
-                        <a href="{{ crumb.url }}">{{ crumb.data.navigation.title | safe }}</a>
-                    {% endif %}
-                {% endfor %}
+                {{ breadcrumb(collections, navigation.key) }}
             </nav>
         </nav>
         {% endif %}
 
         {% endif %}
-        {% endif %}
     </main>
 
     <!-- JavaScript for navigation -->
     <script src="/assets/js/navigation.js"></script>
+    <script src="/assets/js/liturgical-period.js"></script>
+    <script src="/assets/js/ornament-rotation.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 ---
-title: "А҆по́столъ"
+title: '<span class="display">А҆по́столъ</span>'
 layout: work.njk
+ornament: headpiece-l2
 tocDividers:
   - "2"
   - "5"
@@ -28,7 +29,7 @@ navigation:
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

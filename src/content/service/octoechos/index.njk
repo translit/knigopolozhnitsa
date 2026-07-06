@@ -1,7 +1,7 @@
 ---
-title: "Ѻ҆ктѡ́ихъ,"
-subtitle: "си́рѣчь ѻ҆смогла́сникъ."
+title: '<span class="display">Ѻ҆ктѡ́ихъ,</span><br>си́рѣчь ѻ҆смогла́сникъ.'
 layout: work.njk
+ornament: headpiece-l2
 glasFolds:
   - label: "Гла́съ а҃"
     start: 1
@@ -52,7 +52,7 @@ navigation:
     {% for part in sortedParts %}
       {% set num = part.fileSlug | int %}
       {% if num >= glas.start and num <= glas.end %}
-      <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+      <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
       {% endif %}
     {% endfor %}
     </ul>
@@ -62,7 +62,7 @@ navigation:
 {% for part in sortedParts %}
   {% set num = part.fileSlug | int %}
   {% if num > (tocDividers[0] | int) %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% endif %}
 {% endfor %}
 </ul>

@@ -1,11 +1,10 @@
 ---
-title: "Канѡ́нъ и҆ стїхи̑ры"
-subtitle: "ст҃ы́ѧ па́схи."
+title: '<span class="display">Канѡ́нъ и҆ стїхи̑ры</span><br>ст҃ы́ѧ па́схи.'
 navigation:
   key: canons-easter
   parent: canons
   title: "Канѡ́нъ па́схи"
-type: "canon"
+type: canon
 ---
 
 ## Тропа́рь, гла́съ є҃:
@@ -262,4 +261,4 @@ type: "canon"
 
 <rubric class="inline">Та́же,</rubric> <incipit><red>Х</red>рⷭ҇то́съ воскре́се:</incipit> <rubric class="inline">три́жды.</rubric>
 
-{% illustration "small-ornaments/greek-cross-with-letters-gould", "small" %}
+{% ornament "tailpiece-03", "medium" %}

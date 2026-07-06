@@ -1,11 +1,10 @@
 ---
-title: "Канѡ́нъ"
-subtitle: "ѡ҆ ѹ҆со́пшихъ."
+title: '<span class="display">Канѡ́нъ</span><br>ѡ҆ ѹ҆со́пшихъ.'
 navigation:
   key: canons-deceasedmany
   parent: canons
   title: "Канѡ́нъ ѡ҆ ѹ҆со́пшихъ"
-type: "canon"
+type: canon
 ---
 
 ## Нача́ло.
@@ -28,11 +27,11 @@ type: "canon"
 
 <rubric>Сла́ва, и҆ ны́нѣ:</rubric>
 
-<div class="verse">
-<red>П</red>рїиди́те, поклони́мсѧ цр҃е́ви на́шемꙋ бг҃ꙋ.<br>
-<red>П</red>рїиди́те, поклони́мсѧ и҆ припаде́мъ хрⷭ҇тꙋ̀, цр҃е́ви на́шемꙋ бг҃ꙋ.<br>
+<red>П</red>рїиди́те, поклони́мсѧ цр҃е́ви на́шемꙋ бг҃ꙋ.
+
+<red>П</red>рїиди́те, поклони́мсѧ и҆ припаде́мъ хрⷭ҇тꙋ̀, цр҃е́ви на́шемꙋ бг҃ꙋ.
+
 <red>П</red>рїиди́те, поклони́мсѧ и҆ припаде́мъ самомꙋ̀ хрⷭ҇тꙋ̀, цр҃е́ви и҆ бг҃ꙋ на́шемꙋ.
-</div>
 
 ## Ѱало́мъ ч҃.
 
@@ -298,4 +297,4 @@ type: "canon"
 
 <red>П</red>око́й, гдⷭ҇и, дꙋ́шы ѹ҆со́пшихъ ра́бъ твои́хъ <rubric class="inline">[покло́нъ]</rubric>, и҆ є҆ли́ко въ житїѝ се́мъ ꙗ҆́кѡ человѣ́цы согрѣши́ша, ты̀ же ꙗ҆́кѡ чл҃колю́бецъ бг҃ъ простѝ и҆́хъ и҆ поми́лꙋй <rubric class="inline">[покло́нъ]</rubric>, вѣ̑чныѧ мꙋ̑ки и҆зба́ви <rubric class="inline">[покло́нъ]</rubric>, нбⷭ҇номꙋ црⷭ҇твїю прича́стники ѹ҆чинѝ <rubric class="inline">[покло́нъ]</rubric> и҆ дꙋша́мъ на́шимъ полє́знаѧ сотворѝ <rubric class="inline">[покло́нъ]</rubric>.
 
-{% illustration "small-ornaments/golgotha-cross-small-gould", "small" %}
+{% ornament "tailpiece-01", "medium" %}

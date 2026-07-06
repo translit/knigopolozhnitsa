@@ -1,6 +1,7 @@
 ---
-title: "Мл҃твы гдⷭ҇ꙋ бг҃ꙋ."
+title: '<span class="display">Мл҃твы гдⷭ҇ꙋ бг҃ꙋ.</span>'
 layout: work.njk
+ornament: headpiece-l2
 navigation:
   key: prayers-god
   title: "Мл҃твы гдⷭ҇ꙋ бг҃ꙋ"
@@ -16,7 +17,7 @@ navigation:
 
 <ul class="work-toc">
 {% for part in unsortedParts | sortByNumber %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

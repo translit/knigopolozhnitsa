@@ -1,9 +1,8 @@
 ---
-title: "Бі́блїа"
-subtitle: "сі́рѣчь кни̑ги сщ҃е́ннагѡ писа́нїѧ ве́тхагѡ и҆ но́вагѡ завѣ́та."
+title: '<span class="display">Бі́блїа</span><br>сі́рѣчь кни̑ги сщ҃е́ннагѡ писа́нїѧ ве́тхагѡ и҆ но́вагѡ завѣ́та.'
 layout: work.njk
-illustration: "bars-headers-fullpage/russian-interlace-bar-2"
-source: <https://wikisource.org/wiki/Бі́блїа>
+ornament: "headpiece-l1"
+source: "https://wikisource.org/wiki/Бі́блїа"
 navigation:
   key: bible
   title: "Бі́блїа"
@@ -38,7 +37,7 @@ tocDividers:
   {% if tocSections and part.fileSlug in tocSections %}
     <li class="toc-section">{{ tocSections[part.fileSlug] }}</li>
   {% endif %}
-  <li><a href="{{ part.fileSlug }}/">{{ part.data.title }}</a></li>
+  <li><a href="{{ part.fileSlug }}/">{{ part.data.navigation.title or (part.data.title | safe) }}</a></li>
   {% if tocDividers and part.fileSlug in tocDividers %}
     <li class="toc-divider" aria-hidden="true"></li>
   {% endif %}

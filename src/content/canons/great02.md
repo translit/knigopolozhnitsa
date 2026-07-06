@@ -1,11 +1,10 @@
 ---
-title: "Вели́кїй канѡ́нъ,"
-subtitle: "вто́рникъ."
+title: '<span class="display">Вели́кїй канѡ́нъ,</span><br>вто́рникъ.'
 navigation:
   key: canons-great02
   parent: canons
   title: "Вели́кїй канѡ́нъ, вт"
-type: "canon"
+type: canon
 ---
 
 ## Пѣ́снь а҃.
@@ -248,4 +247,4 @@ type: "canon"
 
 <rubric class="inline">Катава́сїа:</rubric> <irmos><red>Б</red>езсѣ́меннагѡ зача́тїѧ ржⷭ҇тво̀ несказа́нное, мт҃ре безмꙋ́жныѧ нетлѣ́ненъ пло́дъ: бж҃їе бо рожде́нїе ѡ҆бновлѧ́етъ є҆стєства̀. Тѣ́мже тѧ̀ всѝ ро́ди, ꙗ҆́кѡ бг҃оневѣ́стнꙋю мт҃рь правосла́внѡ велича́емъ.</irmos>
 
-{% illustration "small-ornaments/jerusalem-cross-gould", "small" %}
+{% ornament "tailpiece-01", "medium" %}

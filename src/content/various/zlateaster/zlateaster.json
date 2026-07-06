@@ -1,3 +1,5 @@
 {
-  "layout": "single-work.njk"
+  "layout": "leaf.njk",
+  "ornament": "headpiece-l2",
+  "standalone": true
 }

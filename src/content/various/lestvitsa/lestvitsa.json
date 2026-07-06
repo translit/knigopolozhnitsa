@@ -1,1 +1,3 @@
-{"layout": "chapter.njk"}
+{
+  "layout": "leaf.njk"
+}

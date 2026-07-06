@@ -1,0 +1,19 @@
+{% macro julianDate(show=false, full=false, tone=false) %}
+{% if show %}
+<div id="julian-date"></div>
+{% if full %}
+<div id="liturgical-week"></div>
+<div id="great-feast"></div>
+<div id="daily-readings"></div>
+{% endif %}
+{% endif %}
+{% if tone %}
+<div id="current-tone"></div>
+{% endif %}
+{% endmacro %}
+
+{% macro julianDateScript(show=false, tone=false) %}
+{% if show or tone %}
+<script src="/assets/js/julian-date.js"></script>
+{% endif %}
+{% endmacro %}

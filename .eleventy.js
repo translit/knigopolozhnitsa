@@ -1,31 +1,106 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
+const { liturgicalTermsRegex, numberedBookPartsRegex, NUMERAL_PATTERN } = require('./lib/cu_liturgical');
+const { getPeriod } = require('./src/assets/js/liturgical-period.js');
+const registerTodayRedirectors = require('./eleventy/today_redirectors');
+
+const decodeEntities = (html) => html
+  .replace(/&nbsp;/g, " ")
+  .replace(/&amp;/g, "&")
+  .replace(/&lt;/g, "<")
+  .replace(/&gt;/g, ">")
+  .replace(/&quot;/g, '"')
+  .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n)))
+  .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)));
+
+const stripTags = (html) =>
+  decodeEntities(html.replace(/<[^>]+>/g, "")).normalize("NFC").trim();
+
+const CONTENT_ROOT = path.join(__dirname, 'src/content');
+const ORNAMENT_SIZES = new Set(['xsmall', 'small', 'medium', 'large', 'xlarge']);
+
+// Precompiled regexes for slavonicNumeralNoBreak — built once at module scope
+const _LT  = liturgicalTermsRegex();
+const _NP  = NUMERAL_PATTERN;
+const _BP  = numberedBookPartsRegex();
+const RX_TERM_NUM          = new RegExp(`(^|\\s|>|\\[)(${_LT})\\s+(${_NP})`, 'gi');
+const RX_TERM_COMMA_NUM    = new RegExp(`(^|\\s|>|\\[)(${_LT}),\\s+(${_NP})`, 'gi');
+const RX_TERM_LINKED       = new RegExp(`(^|\\s|>|\\[)(${_LT})\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
+const RX_TERM_COMMA_LINKED = new RegExp(`(^|\\s|>|\\[)(${_LT}),\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
+const RX_NUM_WEEK          = new RegExp(`(^|\\s)(${_NP}) ([НнСс]ед\\S*)`, 'gm');
+const RX_NUM_BOOK          = new RegExp(`(^|\\s|>|\\[)(${_NP}) (${_BP})`, 'g');
 
 module.exports = function(eleventyConfig) {
 
+  const cacheResets = [];
+
   // PERFORMANCE OPTIMIZATION: Cache navigation data
-  let navigationCache = null;
-  let breadcrumbCache = new Map();
-  let chapterNavCache = new Map();
+  let navigationCache = null;        cacheResets.push(() => { navigationCache = null; });
+  let navByKey = null;               cacheResets.push(() => { navByKey = null; });
+  let navByParent = null;            cacheResets.push(() => { navByParent = null; });
+  const breadcrumbCache = new Map(); cacheResets.push(() => breadcrumbCache.clear());
+  const chapterNavCache = new Map(); cacheResets.push(() => chapterNavCache.clear());
+
+  function initNavCaches(collection) {
+    if (navigationCache) return;
+    navigationCache = collection.filter(page => page.data.navigation);
+    navByKey = new Map();
+    navByParent = new Map();
+    for (const page of navigationCache) {
+      const nav = page.data.navigation;
+      if (nav.key) navByKey.set(nav.key, page);
+      const parent = nav.parent || null;
+      if (!navByParent.has(parent)) navByParent.set(parent, []);
+      navByParent.get(parent).push(page);
+    }
+    for (const arr of navByParent.values()) {
+      arr.sort((a, b) => (a.data.navigation.order || 0) - (b.data.navigation.order || 0));
+    }
+  }
+
+  // PERFORMANCE OPTIMIZATION: Cache disk reads for shortcodes
+  const fileCache = new Map();   cacheResets.push(() => fileCache.clear());
+  let ornamentManifest = null;   cacheResets.push(() => { ornamentManifest = null; });
+
+  function readCached(absPath) {
+    if (fileCache.has(absPath)) return fileCache.get(absPath);
+    const content = fs.readFileSync(absPath, 'utf8');
+    fileCache.set(absPath, content);
+    return content;
+  }
+
+  function loadOrnamentManifest() {
+    if (ornamentManifest) return ornamentManifest;
+    try {
+      ornamentManifest = JSON.parse(
+        readCached(path.join(__dirname, 'src/assets/ornaments/manifest.json'))
+      );
+    } catch (e) {
+      console.error('ornament manifest not found:', e.message);
+      ornamentManifest = { roles: {} };
+    }
+    return ornamentManifest;
+  }
+
+  eleventyConfig.on('eleventy.before', () => cacheResets.forEach(fn => fn()));
+
+  registerTodayRedirectors(eleventyConfig);
+
+  eleventyConfig.addFilter("striptags", (s) => stripTags(String(s ?? "")));
+
+  eleventyConfig.addFilter("navMode", (data) => {
+    if (!data.navigation || !data.navigation.key) return 'none';
+    if (data.standalone || data.noSwipe) return 'standalone';
+    if (data.type && data.navigation.parent) return 'chapter';
+    if (!data.type && data.navigation.parent) return 'toc';
+    return 'none';
+  });
 
   // Custom navigation filter with caching
   eleventyConfig.addFilter("customNavigation", function(collection, parentKey = null) {
-    // Initialize cache once
-    if (!navigationCache) {
-      navigationCache = collection.filter(page => page.data.navigation);
-    }
-
-    // Filter by parent using cached data
-    const filtered = navigationCache.filter(page => {
-      if (parentKey === null) {
-        return !page.data.navigation.parent; // Root level items
-      }
-      return page.data.navigation.parent === parentKey;
-    });
-
-    // Sort by order (keep this in case you want it later)
-    return filtered.sort((a, b) => {
-      return (a.data.navigation.order || 0) - (b.data.navigation.order || 0);
-    });
+    initNavCaches(collection);
+    return navByParent.get(parentKey) || [];
   });
 
   // Custom breadcrumb filter with caching
@@ -35,18 +110,17 @@ module.exports = function(eleventyConfig) {
       return breadcrumbCache.get(currentKey);
     }
 
-    // Initialize navigation cache if needed
-    if (!navigationCache) {
-      navigationCache = collection.filter(page => page.data.navigation);
-    }
+    initNavCaches(collection);
 
     const breadcrumbs = [];
-    let current = navigationCache.find(page => page.data.navigation.key === currentKey);
+    let current = navByKey.get(currentKey);
 
     while (current) {
-      breadcrumbs.unshift(current);
+      if (!current.data.skipBreadcrumb) {
+        breadcrumbs.unshift(current);
+      }
       if (current.data.navigation.parent) {
-        current = navigationCache.find(page => page.data.navigation.key === current.data.navigation.parent);
+        current = navByKey.get(current.data.navigation.parent);
       } else {
         break;
       }
@@ -57,9 +131,11 @@ module.exports = function(eleventyConfig) {
     return breadcrumbs;
   });
 
-  // Copy static assets - CSS and JS only
+  // Copy static assets - CSS, JS, and lectionary data
   eleventyConfig.addPassthroughCopy({"src/assets/css": "assets/css"});
   eleventyConfig.addPassthroughCopy({"src/assets/js": "assets/js"});
+  eleventyConfig.addPassthroughCopy({"src/assets/data": "assets/data"});
+  eleventyConfig.addPassthroughCopy({"src/assets/ornaments": "assets/ornaments"});
 
   // Copy favicon images
   eleventyConfig.addPassthroughCopy({"src/assets/images": "assets/images"});
@@ -67,10 +143,9 @@ module.exports = function(eleventyConfig) {
   // Copy robots.txt to root
   eleventyConfig.addPassthroughCopy({"src/assets/robots.txt": "robots.txt"});
 
-  // Copy only the fonts actually used in CSS
-  eleventyConfig.addPassthroughCopy({"src/assets/fonts/Triodion-Regular.woff2": "assets/fonts/Triodion-Regular.woff2"});
-  eleventyConfig.addPassthroughCopy({"src/assets/fonts/Vertograd-Regular.woff2": "assets/fonts/Vertograd-Regular.woff2"});
-  eleventyConfig.addPassthroughCopy({"src/assets/fonts/Oglavie-Regular.woff2": "assets/fonts/Oglavie-Regular.woff2"});
+  eleventyConfig.addPassthroughCopy({"src/assets/fonts": "assets/fonts"});
+
+  eleventyConfig.addWatchTarget("./src/assets/ornaments/manifest.json");
 
   // Add filter for numerical sorting (for dynamic subsection indexes)
   eleventyConfig.addFilter("sortByNumber", function(collection) {
@@ -82,10 +157,6 @@ module.exports = function(eleventyConfig) {
   });
 
   // Collections for dynamic subsection indexes
-  eleventyConfig.addCollection("akathistParts", function(collectionApi) {
-    return collectionApi.getFilteredByGlob("src/content/akathists/*/*.md");
-  });
-
   eleventyConfig.addCollection("psalterParts", function(collectionApi) {
     return collectionApi.getFilteredByGlob("src/content/psalter/*/*.md");
   });
@@ -145,31 +216,27 @@ module.exports = function(eleventyConfig) {
       return chapterNavCache.get(currentKey);
     }
 
-    // Initialize navigation cache if needed
-    if (!navigationCache) {
-      navigationCache = collection.filter(page => page.data.navigation);
-    }
+    initNavCaches(collection);
 
-    const current = navigationCache.find(page => page.data.navigation && page.data.navigation.key === currentKey);
+    const current = navByKey.get(currentKey);
     if (!current || !current.data.navigation.parent) {
       chapterNavCache.set(currentKey, null);
       return null;
     }
 
-    // CRITICAL: Check if current page uses single-work layout
-    if (current.data.layout === 'single-work.njk') {
+    // Standalone single-work pages opt out of chapter nav
+    if (current.data.standalone) {
       chapterNavCache.set(currentKey, null);
       return null;
     }
 
     const workKey = current.data.navigation.parent;
 
-    // FIXED: Only include chapter pages, not single works
-    const siblings = navigationCache.filter(page =>
-      page.data.navigation &&
-      page.data.navigation.parent === workKey &&  // Must match exact parent key
-      page.data.layout === 'chapter.njk'          // Only chapter pages
-    ).sort((a, b) => (a.data.navigation.order || 0) - (b.data.navigation.order || 0));
+    // Siblings: same parent, have a type (i.e. chapter leaves), exclude standalone pages
+    // navByParent arrays are pre-sorted by navigation.order.
+    const siblings = (navByParent.get(workKey) || []).filter(page =>
+      page.data.type && !page.data.standalone
+    );
 
     const currentIndex = siblings.findIndex(page => page.data.navigation.key === currentKey);
 
@@ -187,29 +254,55 @@ module.exports = function(eleventyConfig) {
     return result;
   });
 
-  // ILLUSTRATION SHORTCODE - Embeds SVG illustrations from src/assets/illustrations/
-  // Usage: {% illustration "category/name" %} or {% illustration "category/name", "small" %}
-  // Sizes: "xsmall" (2rem), "small" (3rem), "medium" (4.5rem), "large" (6.75rem), "xlarge" (10.125rem), or omit for full width
-  eleventyConfig.addShortcode("illustration", function(name, size) {
-    const fs = require('fs');
-    const path = require('path');
+  // ORNAMENT SHORTCODE - Embeds SVG ornaments from src/assets/ornaments/
+  // Usage: {% ornament "role-name" %} (logical name resolved via manifest.json)
+  //        {% ornament "category/file" %} (direct path, for power use)
+  // Sizes: "xsmall" (3rem box), "small" (5rem box), "medium" (8rem box), "large" (18rem, vw-capped for mobile), "xlarge" (18rem desktop, scales with text on tablets), or omit for default (25rem cap).
+  // Size resolution order: explicit arg → manifest role.size → none.
+  // Each size is a square bounding box: wide SVGs hit the width cap, tall SVGs hit the height cap.
+  // manifest.json maps logical role names to { category, size?, candidates: [{file, period?}, ...] }.
+  // When candidates.length > 1, data-* attrs are emitted for ornament-rotation.js to swap at runtime.
+  eleventyConfig.addShortcode("ornament", function(name, size) {
+    const manifest = loadOrnamentManifest();
 
-    const svgPath = path.join(__dirname, 'src/assets/illustrations', `${name}.svg`);
+    let svgRelPath;
+    let candidates = null;
+    let category = null;
+    let chosenFile = null;
+    const role = manifest.roles[name];
+    if (role) {
+      candidates = role.candidates;
+      category = role.category;
+      const buildPeriod = getPeriod(new Date());
+      const chosen = candidates.find(c => c.period === buildPeriod)
+                  || candidates.find(c => !c.period)
+                  || candidates[0];
+      chosenFile = chosen.file;
+      svgRelPath = `${category}/${chosenFile}`;
+    } else {
+      svgRelPath = name; // direct path fallback: "category/file"
+    }
+    const svgPath = path.join(__dirname, 'src/assets/ornaments', `${svgRelPath}.svg`);
 
-    // Build class list
-    let classes = 'illustration';
-    if (size === 'xsmall' || size === 'small' || size === 'medium' || size === 'large' || size === 'xlarge') {
-      classes += ` illustration-${size}`;
+    const effectiveSize = size || (role && role.size);
+    let classes = 'ornament';
+    if (ORNAMENT_SIZES.has(effectiveSize)) {
+      classes += ` ornament-${effectiveSize}`;
     }
 
     try {
-      let svg = fs.readFileSync(svgPath, 'utf8');
-      svg = svg.replace(/<\?xml[^?]*\?>\s*/g, '');  // Remove XML declaration
-      svg = svg.replace(/<!DOCTYPE[^>]*>\s*/g, ''); // Remove DOCTYPE
-      return `<div class="${classes}">${svg}</div>`;
+      let svg = readCached(svgPath);
+      svg = svg.replace(/<\?xml[^?]*\?>\s*/g, '');
+      svg = svg.replace(/<!DOCTYPE[^>]*>\s*/g, '');
+      let dataAttrs = '';
+      if (candidates && candidates.length > 1) {
+        // data-file = the file already inlined; client early-returns if it still matches.
+        dataAttrs = ` data-file="${chosenFile}" data-category="${category}" data-candidates='${JSON.stringify(candidates)}'`;
+      }
+      return `<div class="${classes}"${dataAttrs}>${svg}</div>`;
     } catch (error) {
-      console.error(`Illustration '${name}' not found at ${svgPath}`);
-      return `<!-- Illustration '${name}' not found -->`;
+      console.error(`Ornament '${name}' not found at ${svgPath}`);
+      return `<!-- Ornament '${name}' not found -->`;
     }
   });
 
@@ -241,16 +334,19 @@ module.exports = function(eleventyConfig) {
     return processedContent.trim();
   }
 
+  function finishTransclude(text, options) {
+    text = stripFootnotes(text);
+    if (options.strip) text = stripFormatting(text, options.strip);
+    if (options.wrap) return `{${options.wrap}}\n${text}\n{/fold}`;
+    return text;
+  }
+
   // Transclusion shortcode for sections marked with HTML comments
   eleventyConfig.addShortcode("transcludeSection", function(filePath, sectionName, options = {}) {
-    const fs = require('fs');
-    const path = require('path');
-
-    // Use hardcoded path since this.eleventy.config.dir is not accessible
-    const fullPath = path.join(__dirname, 'src/content', filePath);
+    const fullPath = path.join(CONTENT_ROOT, filePath);
 
     try {
-      let content = fs.readFileSync(fullPath, 'utf8');
+      let content = readCached(fullPath);
 
       // Extract section between HTML comments
       const startPattern = new RegExp(`<!-- transclude:${sectionName} -->`);
@@ -265,19 +361,7 @@ module.exports = function(eleventyConfig) {
           endMatch
         ).trim();
 
-        // Strip footnote references by default (they point nowhere in transcluded content)
-        sectionContent = stripFootnotes(sectionContent);
-
-        // Apply formatting stripping if requested
-        if (options.strip) {
-          sectionContent = stripFormatting(sectionContent, options.strip);
-        }
-
-        // If wrap option provided, wrap content in fold syntax
-        if (options.wrap) {
-          return `{${options.wrap}}\n${sectionContent}\n{/fold}`;
-        }
-        return sectionContent;
+        return finishTransclude(sectionContent, options);
       }
 
       return `<!-- Section '${sectionName}' not found in ${filePath} -->`;
@@ -289,31 +373,15 @@ module.exports = function(eleventyConfig) {
 
   // Transclusion shortcode for entire file (minus frontmatter only)
   eleventyConfig.addShortcode("transclude", function(filePath, options = {}) {
-    const fs = require('fs');
-    const path = require('path');
-
-    const fullPath = path.join(__dirname, 'src/content', filePath);
+    const fullPath = path.join(CONTENT_ROOT, filePath);
 
     try {
-      let content = fs.readFileSync(fullPath, 'utf8');
+      let content = readCached(fullPath);
 
       // Remove frontmatter if present
       content = content.replace(/^---[\s\S]*?---\n/, '');
 
-      // Strip footnote references by default (they point nowhere in transcluded content)
-      content = stripFootnotes(content);
-
-      // Apply formatting stripping if requested
-      if (options.strip) {
-        content = stripFormatting(content, options.strip);
-      }
-
-      // If wrap option provided, wrap content in fold syntax
-      if (options.wrap) {
-        return `{${options.wrap}}\n${content}\n{/fold}`;
-      }
-
-      return content;
+      return finishTransclude(content, options);
     } catch (error) {
       console.error(`Error transcluding ${filePath}:`, error.message);
       return `<!-- Error: Could not transclude ${filePath} -->`;
@@ -322,13 +390,10 @@ module.exports = function(eleventyConfig) {
 
   // Transclusion shortcode for line ranges
   eleventyConfig.addShortcode("transcludeLines", function(filePath, startLine, endLine, options = {}) {
-    const fs = require('fs');
-    const path = require('path');
-
-    const fullPath = path.join(__dirname, 'src/content', filePath);
+    const fullPath = path.join(CONTENT_ROOT, filePath);
 
     try {
-      let content = fs.readFileSync(fullPath, 'utf8');
+      let content = readCached(fullPath);
 
       // Remove frontmatter if present
       content = content.replace(/^---[\s\S]*?---\n/, '');
@@ -339,15 +404,8 @@ module.exports = function(eleventyConfig) {
       const extractedLines = lines.slice(startLine - 1, endLine);
       let extractedContent = extractedLines.join('\n').trim();
 
-      // Strip footnote references by default (they point nowhere in transcluded content)
-      extractedContent = stripFootnotes(extractedContent);
-
-      // If wrap option provided, wrap content in fold syntax
-      if (options.wrap) {
-        return `{${options.wrap}}\n${extractedContent}\n{/fold}`;
-      }
-
-      return extractedContent;
+      // strip option intentionally omitted — transcludeLines preserves original asymmetry.
+      return finishTransclude(extractedContent, { wrap: options.wrap });
     } catch (error) {
       console.error(`Error transcluding lines from ${filePath}:`, error.message);
       return `<!-- Error: Could not transclude lines from ${filePath} -->`;
@@ -357,148 +415,10 @@ module.exports = function(eleventyConfig) {
   // Conservative transform to add non-breaking space before Church Slavonic numerals
   eleventyConfig.addTransform("slavonicNumeralNoBreak", function(content, outputPath) {
     if (outputPath && outputPath.endsWith(".html")) {
-      // Define the numeral pattern once
-      const numeralPattern = '[а-ѱѡцѳѻꙋ][҃҂]+[а-ѱѡцѳѻꙋ҃҂]*\\.?:?';
-      const liturgicalTerms = [
-        'а҆нтїфѡ́нъ',
-        'А҆мѡ́с\\.',
-        'Быт\\.',
-        'Втор\\.',
-        'Второз\\.',
-        'Второзак\\.',
-        'Галат\\.',
-        'гл\\.',
-        'глава̀',
-        'гла́въ',
-        'гла́съ',
-        'Дан\\.',
-        'Дѣѧ́н\\.',
-        'Є҆вр\\.',
-        'Є҆ккл\\.',
-        'Є҆фес\\.',
-        'зача́ло',
-        'И҆сх\\.',
-        'і҆ѡа́н\\.',
-        'І҆а́к\\.',
-        'І҆езек\\.',
-        'І҆ерем\\.',
-        'І҆ис\\.',
-        'І҆исꙋ́с\\.',
-        'І҆ѡа́н\\.',
-        'І҆́ѡв\\.',
-        'і҆́косъ',
-        'каѳі́сма',
-        'каѳі́смꙋ',
-        'каѳі̑смы',
-        'Колос\\.',
-        'конда́къ',
-        'кор\\.',
-        'Леѵ\\.',
-        'ли́стъ',
-        'Лꙋк\\.',
-        'Ма́рк\\.',
-        'Матѳ\\.',
-        'мета̑нїѧ',
-        'Мїх\\.',
-        'мине́и',
-        'Мч҃нчны',
-        'мл҃тва',
-        'на',
-        'Наꙋ́м\\.',
-        'Наꙋм\\.',
-        'петр\\.',
-        'Пла́ч\\.',
-        'При́тч\\.',
-        'пѣ́снь',
-        'Пѣ́сн\\.',
-        'покло́ны',
-        'Ри́м\\.',
-        'Рим\\.',
-        'самогла́сны',
-        'Сїра́х\\.',
-        'сол\\.',
-        'Софо́н\\.',
-        'ст\\.',
-        'Сті́хъ',
-        'стїхѡ́въ',
-        'ті́т\\.',
-        'тїм\\.',
-        'тїмоѳ\\.',
-        'Тїт\\.',
-        'трипѣ́снца',
-        'Фїлїп\\.',
-        'ча́съ',
-        'ча́сть',
-        'ца́р\\.',
-        'цар\\.',
-        'ѱало́мъ',
-        'ѱалма̀',
-        'Ѱал\\.',
-        'Трет\\. посл\\. Карѳ\\.',
-        'Дїонѵ́с\\. а҆леѯ\\.',
-        'Григ\\. неокес\\.',
-        'Григ\\. нѵ́сс\\.',
-        'Дїон\\. а҆леѯ\\.',
-        'Петр\\. а҆леѯ\\.',
-        'Слич\\. Двꙋкр\\.',
-        'Григ\\. неок\\.',
-        'Премꙋ́др\\.',
-        'А҆гкѵ́р\\.',
-        'А҆нтїох\\.',
-        'А҆по́ст\\.',
-        'Дїонѵ́с\\.',
-        'Та́мъ же',
-        'Ѳео́фїл\\.',
-        'А҆гѵ́р\\.',
-        'А҆пост\\.',
-        'Васі́л\\.',
-        'Га́нгр\\.',
-        'Кѵрі́л\\.',
-        'Кѷрі́л\\.',
-        'Двꙋкр\\.',
-        'Пе́рв\\.',
-        'Тїмоѳ\\.',
-        'Ѳео́ф\\.',
-        'А҆гк\\.',
-        'А҆нт\\.',
-        'Карѳ\\.',
-        'Лаод\\.',
-        'Неок\\.',
-        'Перв\\.',
-        'Сард\\.',
-        'Седм\\.',
-        'Трет\\.',
-        'Четв\\.',
-        'Шест\\.',
-        'Вас\\.',
-      ].join('|');
-
-      // Only target specific liturgical contexts to avoid widespread &nbsp; pollution
-      // Pattern: liturgical terms followed by space and numeral
-      // Match only when preceded by whitespace, start of line, or HTML tag to avoid matching parts of words
-      content = content.replace(
-        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms})\\s+(${numeralPattern})`, 'gi'),
-        '$1$2&nbsp;$3'
-      );
-
-      // Pattern: comma followed by space and numeral (only in specific contexts)
-      // Match only when preceded by whitespace, start of line, HTML tag, or opening bracket
-      content = content.replace(
-        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms}),\\s+(${numeralPattern})`, 'gi'),
-        '$1$2,&nbsp;$3'
-      );
-
-      // Pattern: liturgical terms followed by space and linked numeral (e.g. зача́ло <a href="...">к҃и</a>)
-      content = content.replace(
-        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms})\\s+(<a [^>]*>${numeralPattern}<\\/a>)`, 'gim'),
-        '$1$2&nbsp;$3'
-      );
-
-      // Pattern: comma followed by space and linked numeral (in liturgical contexts)
-      content = content.replace(
-        new RegExp(`(^|\\s|>|\\[)(${liturgicalTerms}),\\s+(<a [^>]*>${numeralPattern}<\\/a>)`, 'gim'),
-        '$1$2,&nbsp;$3'
-      );
+      content = content.replace(RX_TERM_NUM, '$1$2&nbsp;$3');
+      content = content.replace(RX_TERM_COMMA_NUM, '$1$2,&nbsp;$3');
+      content = content.replace(RX_TERM_LINKED, '$1$2&nbsp;$3');
+      content = content.replace(RX_TERM_COMMA_LINKED, '$1$2,&nbsp;$3');
 
       // Non-breaking space after inline rubric verse/chapter numbers (e.g. <rubric class="inline vn" id="...">ѳ҃:</rubric>)
       content = content.replace(/(<rubric class="inline[^"]*"[^>]*>[а-ѱѡцѳѻꙋ][҃҂][^<]*:<\/rubric>) /g, '$1&nbsp;');
@@ -518,33 +438,8 @@ module.exports = function(eleventyConfig) {
       // (e.g. <a href="...">в҃</a>, <a href="...">[в҃]</a></rubric>, or <a href="...">є҃:</a></rubric>)
       content = content.replace(/(<a [^>]*>\[?[а-ѱѡцѳѻꙋ][҃҂][^\s<]*<\/a>(?:<\/rubric>)?) /g, '$1&nbsp;');
 
-      // Non-breaking space between numeral and following week noun (e.g. в҃ недѣ́ли, д҃ седми́цы)
-      // Require numeral to be at a word boundary (after whitespace or start of line only, not >
-      // to avoid false matches on split-versal patterns like <red>Ц</red>р҃кве)
-      content = content.replace(
-        new RegExp(`(^|\\s)(${numeralPattern}) ([НнСс]ед\\S*)`, 'gm'),
-        '$1$2&nbsp;$3'
-      );
-
-      // Word parts that follow an ordinal numeral in numbered Bible book abbreviations.
-      // Sorted longest-first within each group to prevent partial shadowing.
-      const numberedBookParts = [
-        'Мѡѷс\\.',                                                              // Books of Moses
-        'Царⷭ҇\\.', 'Царⷭ҇',                                                   // Kings/Samuel (superscript titlo)
-        'цр҃тв\\.', 'Ца́р\\.', 'Цар\\.', 'ца́р\\.', 'цар\\.',                  // Kings/Samuel
-        'Парал\\.',                                                              // Chronicles
-        'Є҆здр\\.',                                                              // Esdras
-        'Мак\\.',                                                                // Maccabees
-        'Петра̀', 'Петр\\.', 'петр\\.',                                         // Peter
-        'І҆ѡа́н\\.', 'і҆ѡа́н\\.', 'І҆ѡа́н',                                     // John (Epistles)
-        'Корі́нѳ\\.', 'Корі́н\\.', 'Корїн\\.', 'корі́нѳ', 'Кор\\.', 'кор\\.', // Corinthians
-        'Солꙋ́н\\.', 'Сол\\.', 'сол\\.',                                       // Thessalonians
-        'Тїмоѳ\\.', 'тїмоѳ\\.', 'Тїм\\.', 'тїм\\.',                          // Timothy
-      ].join('|');
-      content = content.replace(
-        new RegExp(`(^|\\s|>|\\[)(${numeralPattern}) (${numberedBookParts})`, 'g'),
-        '$1$2&nbsp;$3'
-      );
+      content = content.replace(RX_NUM_WEEK, '$1$2&nbsp;$3');
+      content = content.replace(RX_NUM_BOOK, '$1$2&nbsp;$3');
     }
     return content;
   });
@@ -553,89 +448,49 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addTransform("foldSections", function(content, outputPath) {
     if (outputPath && outputPath.endsWith(".html")) {
 
-      // Helper function to add end marker for long folds
-      const addEndMarker = (foldContent) => {
-        const threshold = 0; // characters
-        return foldContent.length > threshold
-          ? foldContent + '<div class="fold-end-marker" data-fold-toggle onclick="">▲</div>'
-          : foldContent;
-      };
+      const addEndMarker = (body) =>
+        body
+          ? body + '<div class="fold-end-marker" data-fold-toggle onclick="">▲</div>'
+          : body;
+
+      const foldHtml = (isOpen, styleClass, summary, body) =>
+        `<details${isOpen ? ' open' : ''}><summary><span class="triangle">▶</span>` +
+        `<span class="${styleClass}">${summary}</span></summary>${addEndMarker(body)}</details>`;
 
       // FIRST PASS: Process inner/nested folds with [[fold]] syntax
-      // These can appear inside regular {fold} sections
-
-      // Handle styled nested fold sections with dash syntax (open variant)
       content = content.replace(
         /\[\[fold-(red|rubric|h1|h2|toc)-open:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
-        function(match, style, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details open><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, style, summary, body) => foldHtml(true, `summary-${style}`, summary, body)
       );
-
-      // Handle styled nested fold sections with dash syntax (closed variant)
       content = content.replace(
         /\[\[fold-(red|rubric|h1|h2|toc):((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
-        function(match, style, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, style, summary, body) => foldHtml(false, `summary-${style}`, summary, body)
       );
-
-      // Handle open nested sections with default styling
       content = content.replace(
         /\[\[fold-open:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
-        function(match, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details open><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, summary, body) => foldHtml(true, 'summary-default', summary, body)
       );
-
-      // Handle closed nested sections with default styling
       content = content.replace(
         /\[\[fold:((?:[^\]]|\](?!\]))+)\]\]([\s\S]*?)\[\[\/fold\]\]/g,
-        function(match, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, summary, body) => foldHtml(false, 'summary-default', summary, body)
       );
 
-      // SECOND PASS: Process outer folds with {fold} syntax (original code)
-
-      // Handle styled fold sections with dash syntax
-      // Pattern: {fold-red:text}, {fold-rubric:text}, {fold-toc:text}, etc.
+      // SECOND PASS: Process outer folds with {fold} syntax
       content = content.replace(
         /\{fold-(red|rubric|h1|h2|toc)-open:([^}]+)\}([\s\S]*?)\{\/fold\}/g,
-        function(match, style, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details open><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, style, summary, body) => foldHtml(true, `summary-${style}`, summary, body)
       );
-
       content = content.replace(
         /\{fold-(red|rubric|h1|h2|toc):([^}]+)\}([\s\S]*?)\{\/fold\}/g,
-        function(match, style, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details><summary><span class="triangle">▶</span><span class="summary-${style}">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, style, summary, body) => foldHtml(false, `summary-${style}`, summary, body)
       );
-
-      // Handle open sections with default styling
       content = content.replace(
         /\{fold-open:([^}]+)\}([\s\S]*?)\{\/fold\}/g,
-        function(match, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details open><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, summary, body) => foldHtml(true, 'summary-default', summary, body)
       );
-
-      // Handle closed sections with default styling
       content = content.replace(
         /\{fold:([^}]+)\}([\s\S]*?)\{\/fold\}/g,
-        function(match, summary, foldContent) {
-          const contentWithMarker = addEndMarker(foldContent);
-          return `<details><summary><span class="triangle">▶</span><span class="summary-default">${summary}</span></summary>${contentWithMarker}</details>`;
-        }
+        (_m, summary, body) => foldHtml(false, 'summary-default', summary, body)
       );
 
       // FINAL CLEANUP: Fix paragraph wrapping that breaks triangle rotation
@@ -652,18 +507,6 @@ module.exports = function(eleventyConfig) {
   // Runs after foldSections so <details>/<summary> are already in place.
   eleventyConfig.addTransform("headingIds", function(content, outputPath) {
     if (!outputPath || !outputPath.endsWith(".html")) return content;
-
-    const decodeEntities = (html) => html
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"')
-      .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n)))
-      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)));
-
-    const stripTags = (html) =>
-      decodeEntities(html.replace(/<[^>]+>/g, "")).normalize("NFC").trim();
 
     const hashId = (text) =>
       "h-" + crypto.createHash("sha1").update(text).digest("hex").slice(0, 8);
