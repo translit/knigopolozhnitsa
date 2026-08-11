@@ -273,9 +273,9 @@ module.exports = function(eleventyConfig) {
     if (role) {
       candidates = role.candidates;
       category = role.category;
-      const buildPeriod = getPeriod(new Date());
-      const chosen = candidates.find(c => c.period === buildPeriod)
-                  || candidates.find(c => !c.period)
+      // Always inline the neutral default (no period) so the build is frozen-safe.
+      // ornament-rotation.js swaps in the seasonal ornament at view time.
+      const chosen = candidates.find(c => !c.period)
                   || candidates[0];
       chosenFile = chosen.file;
       svgRelPath = `${category}/${chosenFile}`;

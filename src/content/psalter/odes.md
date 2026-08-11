@@ -1,5 +1,5 @@
 ---
-title: '<span class="display">Пѣ́сни свѧще́ннагѡ писа́ніѧ.</span>'
+title: '<span class="display">Пѣ́сни свѧще́ннагѡ писа́ніѧ</span>'
 navigation:
   key: "psalter-odes"
   parent: psalter

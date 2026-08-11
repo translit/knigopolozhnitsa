@@ -71,7 +71,7 @@
         { "file": "mp-06", "period": "lent-5" },
         { "file": "mp-06", "period": "lent-6" },
         { "file": "65-06", "period": "holy-week" },
-        { "file": "67-04", "period": "great-feast" }
+        { "file": "65-07", "period": "great-feast" }
       ]
     },
     "tailpiece-01": {
@@ -115,5 +115,16 @@
         { "file": "54-08", "period": "great-feast" }
       ]
     }
+  },
+  "unused": {
+    "headpieces": [
+      { "file": "50-01", "note": "Good candidate for library-home on Pascha" },
+      { "file": "50-02" },
+      { "file": "50-04" },
+      { "file": "64-02" },
+      { "file": "66-01" },
+      { "file": "88-04" },
+      { "file": "mp-03" }
+    ]
   }
 }

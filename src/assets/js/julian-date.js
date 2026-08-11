@@ -537,7 +537,13 @@
       const file = gmap && gmap[p];
       if (!file) return null;
       let anchor = pfx + p;
-      if (half && zachData.gh && zachData.gh[pfx] && zachData.gh[pfx].indexOf(p) !== -1) anchor += 'h';
+      if (half) {
+        // Some zachala repeat their number for a second, distinct fragment
+        // ("N от полу"); gdup maps those to the content's dedicated suffix.
+        const dup = zachData.gdup && zachData.gdup[pfx] && zachData.gdup[pfx][p];
+        if (dup) anchor += dup;
+        else if (zachData.gh && zachData.gh[pfx] && zachData.gh[pfx].indexOf(p) !== -1) anchor += 'h';
+      }
       return '/service/gospel/' + file + '/#' + anchor;
     } else {
       const file = zachData.a[p];

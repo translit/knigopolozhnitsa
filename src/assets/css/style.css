@@ -499,6 +499,11 @@ rubric.inline.nb {
   /* Inherits rubric.inline (red) appearance; class reserved for future restyling */
 }
 
+/* sv = служба — daily-office service marker (Ве́черъ, На ѹ҆́трени, На лїтꙋргі́и…) */
+rubric.inline.sv {
+  font-size: inherit; /* match surrounding body text, not block rubric small-size */
+}
+
 /* Canon-rule deep links inside А҆лфави́тъ rubric citations */
 rubric.inline a.canon-ref {
   /* Reserved for future restyling; inherits surrounding rubric color today */
@@ -552,6 +557,18 @@ p:has(> rubric:only-child):has(+ p > podoben) {
 }
 p:has(> rubric:only-child):has(+ p > podoben) > rubric {
   margin-bottom: 0;
+}
+
+/* Spoken chant texts quoted in full in the Typikon (troparia, kontakia,
+   sedalny, svetilny, stichera, Сла́ва / И҆ ны́нѣ verses) — set apart from the
+   surrounding instruction prose at rubric size, black body, red initial cap. */
+spoken {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--text-size-small);
+  line-height: var(--line-height-base);
+  color: var(--text-color);
+  margin: var(--spacing-base) 0;
 }
 
 /* Refrain (liturgical text, same size as rubrics but black) */
@@ -725,6 +742,16 @@ h2 + .toc-divider {
 }
 
 /* SVG Ornaments */
+
+/* During special liturgical seasons, hide rotating ornaments before first paint.
+   Prevents the neutral default from flashing before the seasonal ornament loads.
+   Added synchronously by the <head> flag script; removed once the correct ornament is ready.
+   Uses visibility (not display:none) to keep layout stable. */
+/* Hide only unresolved rotating ornaments; once orn-ready is added the rule no longer matches. */
+html.orn-rotate .ornament[data-candidates]:not(.orn-ready) {
+  visibility: hidden;
+}
+
 .ornament {
   text-align: center;
   margin: var(--spacing-base) 0;

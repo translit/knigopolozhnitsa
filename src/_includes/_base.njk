@@ -9,6 +9,18 @@
     <title>{{ (navigation.title or title) | striptags }}</title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <meta name="color-scheme" content="light dark">
+    <!-- Ornament period flag: hides rotating ornaments before first paint on special days -->
+    <script src="/assets/js/liturgical-period.js"></script>
+    <script>
+      (function () {
+        var period = getPeriod(new Date());
+        if (period !== 'ordinary') {
+          document.documentElement.classList.add('orn-rotate');
+          // Safety net: remove the class after 2s in case ornament-rotation.js fails to run.
+          setTimeout(function () { document.documentElement.classList.remove('orn-rotate'); }, 2000);
+        }
+      }());
+    </script>
     <!-- Favicon -->
     <link rel="icon" href="/assets/images/icon.svg?v=2" type="image/svg+xml">
     <link rel="icon" href="/assets/images/favicon.ico?v=2" sizes="32x32" type="image/png">
@@ -87,7 +99,6 @@
 
     <!-- JavaScript for navigation -->
     <script src="/assets/js/navigation.js"></script>
-    <script src="/assets/js/liturgical-period.js"></script>
     <script src="/assets/js/ornament-rotation.js"></script>
 </body>
 </html>
