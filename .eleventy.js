@@ -18,7 +18,7 @@ const stripTags = (html) =>
   decodeEntities(html.replace(/<[^>]+>/g, "")).normalize("NFC").trim();
 
 const CONTENT_ROOT = path.join(__dirname, 'src/content');
-const ORNAMENT_SIZES = new Set(['xsmall', 'small', 'medium', 'large', 'xlarge']);
+const ORNAMENT_SIZES = new Set(['xsmall', 'small', 'medium', 'l0', 'l1', 'l2', 'l3']);
 
 // Precompiled regexes for slavonicNumeralNoBreak — built once at module scope
 const _LT  = liturgicalTermsRegex();
@@ -257,7 +257,9 @@ module.exports = function(eleventyConfig) {
   // ORNAMENT SHORTCODE - Embeds SVG ornaments from src/assets/ornaments/
   // Usage: {% ornament "role-name" %} (logical name resolved via manifest.json)
   //        {% ornament "category/file" %} (direct path, for power use)
-  // Sizes: "xsmall" (3rem box), "small" (5rem box), "medium" (8rem box), "large" (18rem, vw-capped for mobile), "xlarge" (18rem desktop, scales with text on tablets), or omit for default (25rem cap).
+  // Sizes: "xsmall" (3rem box), "small" (5rem box), "medium" (8rem box) for inline ornaments and tailpieces;
+  //        "l0"/"l1"/"l2"/"l3" are the headpiece ladder (24/22/20/18rem, fixed across desktop and tablet);
+  //        or omit for default (25rem cap, dividers only).
   // Size resolution order: explicit arg → manifest role.size → none.
   // Each size is a square bounding box: wide SVGs hit the width cap, tall SVGs hit the height cap.
   // manifest.json maps logical role names to { category, size?, candidates: [{file, period?}, ...] }.

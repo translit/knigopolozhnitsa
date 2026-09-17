@@ -2,6 +2,7 @@
   "roles": {
     "library-home": {
       "category": "headpieces",
+      "size": "l0",
       "candidates": [
         { "file": "50-03" },
         { "file": "65-02", "period": "pascha" },
@@ -17,11 +18,12 @@
         { "file": "88-01", "period": "apostles-fast" },
         { "file": "88-02", "period": "dormition-fast" },
         { "file": "88-05", "period": "nativity-fast" },
-        { "file": "67-01", "period": "great-feast" }
+        { "file": "50-01", "period": "great-feast" }
       ]
     },
     "headpiece-l1": {
       "category": "headpieces",
+      "size": "l1",
       "candidates": [
         { "file": "mp-01" },
         { "file": "65-04", "period": "pascha" },
@@ -42,6 +44,7 @@
     },
     "headpiece-l2": {
       "category": "headpieces",
+      "size": "l2",
       "candidates": [
         { "file": "mp-02" },
         { "file": "65-05", "period": "pascha" },
@@ -59,7 +62,7 @@
     },
     "headpiece-l3": {
       "category": "headpieces",
-      "size": "large",
+      "size": "l3",
       "candidates": [
         { "file": "mp-08" },
         { "file": "65-07", "period": "pascha" },
@@ -72,6 +75,13 @@
         { "file": "mp-06", "period": "lent-6" },
         { "file": "65-06", "period": "holy-week" },
         { "file": "65-07", "period": "great-feast" }
+      ]
+    },
+    "headpiece-gospel": {
+      "category": "headpieces",
+      "size": "l1",
+      "candidates": [
+        { "file": "66-01" }
       ]
     },
     "tailpiece-01": {
@@ -118,11 +128,10 @@
   },
   "unused": {
     "headpieces": [
-      { "file": "50-01", "note": "Good candidate for library-home on Pascha" },
+      { "file": "67-01" },
       { "file": "50-02" },
       { "file": "50-04" },
       { "file": "64-02" },
-      { "file": "66-01" },
       { "file": "88-04" },
       { "file": "mp-03" }
     ]

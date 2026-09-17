@@ -1,5 +1,5 @@
 ---
-title: '<span class="display">Вели́кїй канѡ́нъ.</span>'
+title: '<span class="display">Вели́кїй канѡ́нъ</span>'
 navigation:
   key: canons-great
   parent: canons

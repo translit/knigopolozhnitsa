@@ -7,7 +7,7 @@ navigation:
 type: canon
 ---
 
-<rubric>Гла́съ ѕ҃.</rubric>
+<rubric class="centered">Гла́съ ѕ҃.</rubric>
 
 ## Пѣ́снь а҃.
 

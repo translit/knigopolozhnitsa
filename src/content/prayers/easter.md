@@ -1,5 +1,5 @@
 ---
-title: '<span class="display">Часы̀ ст҃ы́ѧ па́схи.</span>'
+title: '<span class="display">Часы̀ ст҃ы́ѧ па́схи</span>'
 navigation:
   key: prayers-easter
   title: "Часы̀ па́схи"

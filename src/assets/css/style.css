@@ -137,16 +137,22 @@
   --spacing-small: 1rem;
   --spacing-large: 2rem;
 
-  /* Ornament sizes. Most scale with --text-size-large (illumination model: ornaments
-     grow with text on tablets). Exception: large is fixed at 18rem so L3 headpieces
-     stay below the mobile container even when the coarse media query inflates xlarge
-     past the container — this is the only change needed to maintain L2 > L3 on mobile.
-     Square bounding box; all ornaments are landscape so width is the binding dimension. */
+  /* Ornament sizes. Square bounding box; all ornaments are landscape so width is the
+     binding dimension.
+     xsmall/small/medium serve inline ornaments and tailpieces; they scale with
+     --text-size-large (illumination model: they grow with text on touch devices).
+     l0..l3 are the headpiece ladder, level 0 (homepage) down to level 3. Fixed rem on
+     purpose: identical on desktop and tablet. Scaling headpieces with the coarse-pointer
+     text bump would push l0 to 30rem on an iPad. The phone clamp lives in each rule's
+     max-width: min(<token>, 100%) — the base .ornament svg { max-width: 100% } has equal
+     specificity, so a bare token there would override it and overflow the container. */
   --ornament-size-xsmall: calc(var(--text-size-large) * 1);
   --ornament-size-small:  calc(var(--text-size-large) * 1.667);
   --ornament-size-medium: calc(var(--text-size-large) * 2.667);
-  --ornament-size-large:  min(18rem, 72vw);
-  --ornament-size-xlarge: calc(var(--text-size-large) * 6);
+  --ornament-size-l0: 24rem;
+  --ornament-size-l1: 22rem;
+  --ornament-size-l2: 20rem;
+  --ornament-size-l3: 18rem;
 
   /* Line heights */
   --line-height-tight: 1.3;
@@ -509,11 +515,6 @@ rubric.inline a.canon-ref {
   /* Reserved for future restyling; inherits surrounding rubric color today */
 }
 
-/* Liturgical text within rubrics (text that needs to stay black inside rubrics) */
-rubric .liturgical-text {
-  color: var(--text-color);
-}
-
 /* Incipit (opening words of liturgical texts) and Acrostic */
 incipit,
 acrostic {
@@ -559,7 +560,7 @@ p:has(> rubric:only-child):has(+ p > podoben) > rubric {
   margin-bottom: 0;
 }
 
-/* Spoken chant texts quoted in full in the Typikon (troparia, kontakia,
+/* Spoken chant texts quoted in full (troparia, kontakia,
    sedalny, svetilny, stichera, Сла́ва / И҆ ны́нѣ verses) — set apart from the
    surrounding instruction prose at rubric size, black body, red initial cap. */
 spoken {
@@ -569,6 +570,13 @@ spoken {
   line-height: var(--line-height-base);
   color: var(--text-color);
   margin: var(--spacing-base) 0;
+}
+
+/* Inside a rubric, spoken text runs inline with the surrounding instruction */
+rubric spoken {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
 }
 
 /* Refrain (liturgical text, same size as rubrics but black) */
@@ -796,17 +804,29 @@ html.orn-rotate .ornament[data-candidates]:not(.orn-ready) {
   max-height: var(--ornament-size-medium);
 }
 
-.ornament-large svg {
-  max-width: var(--ornament-size-large);
-  max-height: var(--ornament-size-large);
+.ornament-l0 svg {
+  max-width: min(var(--ornament-size-l0), 100%);
+  max-height: var(--ornament-size-l0);
 }
 
-.ornament-xlarge svg {
-  max-width: var(--ornament-size-xlarge);
-  max-height: var(--ornament-size-xlarge);
+.ornament-l1 svg {
+  max-width: min(var(--ornament-size-l1), 100%);
+  max-height: var(--ornament-size-l1);
 }
 
-/* Cap unsized ornaments at 25rem; base max-width: 100% still constrains on narrow containers */
+.ornament-l2 svg {
+  max-width: min(var(--ornament-size-l2), 100%);
+  max-height: var(--ornament-size-l2);
+}
+
+.ornament-l3 svg {
+  max-width: min(var(--ornament-size-l3), 100%);
+  max-height: var(--ornament-size-l3);
+}
+
+/* Cap unsized ornaments at 25rem; base max-width: 100% still constrains on narrow
+   containers. Every headpiece role carries an explicit l0..l3 size, so this fallback
+   now applies only to dividers. */
 .ornament:not([class*="ornament-"]) svg {
   width: 25rem;
 }
