@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Елене Дивеевской"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

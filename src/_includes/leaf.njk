@@ -2,14 +2,18 @@
 {% from "_partials/title.njk" import title as renderTitle %}
 
 {% set bodyClass = bodyClass or "church-slavonic leaf" %}
+{% set approvedMark %}<a href="#fn-approved" id="ref-approved">꙳</a>{% endset %}
 
 {% block content %}
 {% set _orn = ornament %}
 {% if _orn %}{% ornament _orn %}{% endif %}
 {% if title and not hideTitle %}
-{{ renderTitle(title) }}
+{{ renderTitle(title, approvedMark if approved else "") }}
 {% endif %}
 <article class="liturgical-text">
     {{ content | safe }}
+{% if approved %}
+    <p id="fn-approved"><a href="#ref-approved">꙳</a> Утвержден для общецерковного использования.</p>
+{% endif %}
 </article>
 {% endblock %}

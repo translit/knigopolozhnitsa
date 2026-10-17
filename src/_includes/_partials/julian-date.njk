@@ -1,10 +1,13 @@
-{% macro julianDate(show=false, full=false, tone=false) %}
+{% macro julianDate(show=false, full=false, tone=false, anchors=null) %}
 {% if show %}
 <div id="julian-date"></div>
 {% if full %}
 <div id="liturgical-week"></div>
 <div id="great-feast"></div>
 <div id="daily-readings"></div>
+{% if anchors %}
+<script type="application/json" id="typikon-anchors">{{ anchors | dump | safe }}</script>
+{% endif %}
 {% endif %}
 {% endif %}
 {% if tone %}

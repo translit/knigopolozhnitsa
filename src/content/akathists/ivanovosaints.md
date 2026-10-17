@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Собору Иваново‐Вознесенских святых"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

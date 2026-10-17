@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Власию Севастийскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

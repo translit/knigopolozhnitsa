@@ -1,9 +1,9 @@
 ---
-title: "<span class=\"display\">Акафист</span><br>иконе «Черниговско-Гефсиманская»."
+title: "<span class=\"display\">Акафист</span><br>иконе «Черниговско‐Гефсиманская»."
 navigation:
   key: akathists-chernigovgeths
   parent: akathists
-  title: "Акафист иконе «Черниговско-Гефсиманская»"
+  title: "Акафист иконе «Черниговско‐Гефсиманская»"
 type: "akathist"
 ---
 

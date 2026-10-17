@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Василию и Константину Ярославским"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

@@ -4,7 +4,7 @@
       "category": "headpieces",
       "size": "l0",
       "candidates": [
-        { "file": "50-03" },
+        { "file": "50-04" },
         { "file": "65-02", "period": "pascha" },
         { "file": "54-04", "period": "bright-week" },
         { "file": "86-03", "period": "lent-1" },
@@ -18,7 +18,8 @@
         { "file": "88-01", "period": "apostles-fast" },
         { "file": "88-02", "period": "dormition-fast" },
         { "file": "88-05", "period": "nativity-fast" },
-        { "file": "50-01", "period": "great-feast" }
+        { "file": "50-01", "period": "great-feast" },
+        { "file": "50-03", "period": "afterfeast" }
       ]
     },
     "headpiece-l1": {
@@ -39,7 +40,8 @@
         { "file": "88-03", "period": "apostles-fast" },
         { "file": "88-03", "period": "dormition-fast" },
         { "file": "88-03", "period": "nativity-fast" },
-        { "file": "67-02", "period": "great-feast" }
+        { "file": "67-02", "period": "great-feast" },
+        { "file": "67-02", "period": "afterfeast" }
       ]
     },
     "headpiece-l2": {
@@ -57,7 +59,8 @@
         { "file": "64-04", "period": "lent-6" },
         { "file": "65-08", "period": "holy-week" },
         { "file": "56-04", "period": "pentecost" },
-        { "file": "67-03", "period": "great-feast" }
+        { "file": "67-03", "period": "great-feast" },
+        { "file": "67-03", "period": "afterfeast" }
       ]
     },
     "headpiece-l3": {
@@ -74,7 +77,8 @@
         { "file": "mp-06", "period": "lent-5" },
         { "file": "mp-06", "period": "lent-6" },
         { "file": "65-06", "period": "holy-week" },
-        { "file": "65-07", "period": "great-feast" }
+        { "file": "65-07", "period": "great-feast" },
+        { "file": "65-07", "period": "afterfeast" }
       ]
     },
     "headpiece-gospel": {
@@ -109,20 +113,21 @@
       "category": "dividers",
       "candidates": [
         { "file": "mp-01" },
-        { "file": "54-08", "period": "pascha" },
-        { "file": "54-08", "period": "bright-week" },
-        { "file": "63-01", "period": "lent-1" },
-        { "file": "63-01", "period": "lent-2" },
-        { "file": "63-01", "period": "lent-3" },
-        { "file": "63-01", "period": "lent-4" },
-        { "file": "63-01", "period": "lent-5" },
-        { "file": "63-01", "period": "lent-6" },
-        { "file": "63-01", "period": "holy-week" },
-        { "file": "61-04", "period": "pentecost" },
+        { "file": "54-08", "period": "pascha", "size": "d1" },
+        { "file": "54-08", "period": "bright-week", "size": "d1" },
+        { "file": "63-01", "period": "lent-1", "size": "d1" },
+        { "file": "63-01", "period": "lent-2", "size": "d1" },
+        { "file": "63-01", "period": "lent-3", "size": "d1" },
+        { "file": "63-01", "period": "lent-4", "size": "d1" },
+        { "file": "63-01", "period": "lent-5", "size": "d1" },
+        { "file": "63-01", "period": "lent-6", "size": "d1" },
+        { "file": "63-01", "period": "holy-week", "size": "d1" },
+        { "file": "61-04", "period": "pentecost", "size": "d1" },
         { "file": "mp-01", "period": "apostles-fast" },
         { "file": "mp-01", "period": "dormition-fast" },
         { "file": "mp-01", "period": "nativity-fast" },
-        { "file": "54-08", "period": "great-feast" }
+        { "file": "54-08", "period": "great-feast", "size": "d1" },
+        { "file": "54-08", "period": "afterfeast", "size": "d1" }
       ]
     }
   },
@@ -130,7 +135,6 @@
     "headpieces": [
       { "file": "67-01" },
       { "file": "50-02" },
-      { "file": "50-04" },
       { "file": "64-02" },
       { "file": "88-04" },
       { "file": "mp-03" }

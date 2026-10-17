@@ -43,6 +43,69 @@
     '12-25': 1
   };
 
+  // Afterfeast (попразднство) spans of the fixed great feasts, as [julianMonth, firstDay, lastDay].
+  // Each span runs from the day after the feast through its отдание (leavetaking), which is
+  // canonically the last day of the afterfeast. Spans were derived as feast+1 … отдание and
+  // cross-checked against Ponomar's own "Afterfeast of…"/"Apodosis of…" day tags, the azbyka.ru
+  // table of предпразднства/попразднства/отдания, and ru.wikipedia "Отдание праздника".
+  //   Рождество Богородицы 09-08 → 09-09…09-12     Богоявление   01-06 → 01-07…01-14
+  //   Воздвижение          09-14 → 09-15…09-21     Преображение  08-06 → 08-07…08-13
+  //   Введение             11-21 → 11-22…11-25     Успение       08-15 → 08-16…08-23
+  //   Рождество Христово   12-25 → 12-26…12-31
+  // Сретение (02-02) and Благовещение (03-25) depend on Pascha and are handled in getPeriod.
+  // The other five GREAT_FEASTS entries (01-01, 06-24, 06-29, 08-29, 10-01) have no afterfeast.
+  var AFTERFEAST_SPANS = [
+    [1,   7, 14],
+    [8,   7, 13],
+    [8,  16, 23],
+    [9,   9, 12],
+    [9,  15, 21],
+    [11, 22, 25],
+    [12, 26, 31]
+  ];
+
+  function inFixedAfterfeast(j) {
+    for (var i = 0; i < AFTERFEAST_SPANS.length; i++) {
+      var s = AFTERFEAST_SPANS[i];
+      if (j.m === s[0] && j.d >= s[1] && j.d <= s[2]) return true;
+    }
+    return false;
+  }
+
+  // Сретение (02-02 Julian): its afterfeast is cut short by Great Lent, so the last day of the
+  // period is a function of the feast's own nday. Key = nday of 02-02, value = nday of the last
+  // day of the period; null = no afterfeast at all. Feast nday <= -66 is unconstrained and takes
+  // the plain feast + 7. Table re-derived from Ponomar's Cmd guards on 02/03–02/09
+  // (CId 37302 = Apodosis, 37303 = Afterfeast, both under SId 373).
+  // NOTE on -65: Ponomar's 02/09 guard is `nday < -58`, so feast + 7 = exactly -58 fires nowhere
+  // and Ponomar shows no отдание those years (1946, 1952, 1957, 2036, 2041, 2047) while still
+  // tagging 02-08 as попразднство — almost certainly `<` where `<=` was meant. We follow Ponomar
+  // and end the span at -59. Set this to -58 to take feast + 7 instead.
+  var SRETENIE_LAST_DAY = {
+    '-65': -59,
+    '-64': -58, '-63': -58, '-62': -58, '-61': -58,
+    '-60': -54, '-59': -54, '-58': -54, '-57': -54,
+    '-56': -52, '-55': -52,
+    '-54': -50, '-53': -50,
+    '-52': -49, '-51': -49, '-50': -49,
+    '-49': null, '-48': null
+  };
+
+  // Gregorian Date for a Julian MM-DD in the given Gregorian year (inverse of toJulian).
+  // Only used for February and March, where the two calendars share the Gregorian year.
+  function fromJulian(year, m, d) {
+    var off = Math.floor(year / 100) - Math.floor(year / 400) - 2;
+    return new Date(year, m - 1, d + off);
+  }
+
+  // Days from Pascha (nday) of a Julian MM-DD in the given Gregorian year.
+  function ndayOfJulian(year, m, d) {
+    var g = fromJulian(year, m, d);
+    return Math.round(
+      (Date.UTC(g.getFullYear(), g.getMonth(), g.getDate()) - pascha(year)) / 86400000
+    );
+  }
+
   // Return a liturgical period string for the given date.
   // Period strings:
   //   pascha, bright-week
@@ -51,7 +114,11 @@
   //   pentecost (Pentecost Sunday through Pentecost week)
   //   apostles-fast, dormition-fast, nativity-fast
   //   great-feast (any of the 12 + Ascension; overrides fasts and lent)
+  //   afterfeast (попразднство through отдание; overrides the fasts, yields to lent/holy-week)
   //   ordinary (everything else)
+  //
+  // Precedence: pascha/bright-week > great-feast > holy-week > lent-* > afterfeast > pentecost
+  // > the three fasts > ordinary.
   //
   // To add a finer period (e.g. a named pre-Lenten week), insert a check here
   // and tag ornament candidates with the new period string in manifest.json.
@@ -85,6 +152,26 @@
     if (diff >= -34 && diff <= -28) return 'lent-3';
     if (diff >= -41 && diff <= -35) return 'lent-2';
     if (diff >= -48 && diff <= -42) return 'lent-1';
+
+    // ── Afterfeast: попразднство through отдание ─────────────────────────────
+    // Ponomar labels the fixed feasts' and the Ascension's afterfeasts in full, plus the
+    // isolated отдание of Pascha (nday 38). Pascha's own nday 8…37 it leaves unlabelled, and
+    // Pentecost's afterfeast is already covered by the 'pentecost' period below.
+    if (diff === 38)              return 'afterfeast';  // отдание Пасхи
+    if (diff >= 40 && diff <= 47) return 'afterfeast';  // Вознесение (nday 39) + отдание 47
+    if (inFixedAfterfeast(j))     return 'afterfeast';
+    if (j.m === 2 && j.d >= 3 && j.d <= 9) {
+      var feast = ndayOfJulian(date.getFullYear(), 2, 2);
+      var last  = feast <= -66 ? feast + 7 : SRETENIE_LAST_DAY[feast];
+      if (typeof last === 'number' && diff > feast && diff <= last) return 'afterfeast';
+    }
+    // Благовещение has no попразднство, only an отдание on 03-26, and not even that when the
+    // feast falls on Lazarus Saturday through Bright Saturday (nday -8…7). Unreachable under the
+    // precedence above — 03-26 can only land on nday -30…-8, always inside Great Lent — but kept
+    // so the rule is explicit if the precedence ever changes.
+    if (j.m === 3 && j.d === 26 && ndayOfJulian(date.getFullYear(), 3, 25) < -8) {
+      return 'afterfeast';
+    }
 
     // ── Pentecost week (Pentecost Sunday through Saturday) ────────────────────
     if (diff >= 49  && diff <= 55)  return 'pentecost';
@@ -130,6 +217,32 @@ if (typeof module !== 'undefined' && module.exports && require.main === module) 
     { date: new Date(2026, 0, 19), expected: 'great-feast',    label: '2026 Theophany (Julian Jan 6)' },
     // Today: Jun 28 Greg = Apostles fast.
     { date: new Date(2026, 5, 28), expected: 'apostles-fast',  label: '2026 Jun 28 apostles-fast' },
+
+    // ── Afterfeast (попразднство). Julian → Gregorian offset is 13 days in 2026. ──────────
+    // Рождество Богородицы: Julian 09-09…09-12 = Greg 09-22…09-25; 09-13 (предпразднство
+    // Воздвижения) is not an afterfeast day.
+    { date: new Date(2026, 8, 22), expected: 'afterfeast',    label: '2026 Sep 22 (Jul 09-09) afterfeast' },
+    { date: new Date(2026, 8, 25), expected: 'afterfeast',    label: '2026 Sep 25 (Jul 09-12) отдание' },
+    { date: new Date(2026, 8, 26), expected: 'ordinary',      label: '2026 Sep 26 (Jul 09-13) not afterfeast' },
+    // Богоявление: отдание Julian 01-14 = Greg 01-27.
+    { date: new Date(2026, 0, 27), expected: 'afterfeast',    label: '2026 Jan 27 (Jul 01-14) отдание Богоявления' },
+    { date: new Date(2026, 0, 28), expected: 'ordinary',      label: '2026 Jan 28 (Jul 01-15) not afterfeast' },
+    // Afterfeast outranks the fasts: Преображение inside the Dormition fast, Введение inside
+    // the Nativity fast.
+    { date: new Date(2026, 7, 20), expected: 'afterfeast',    label: '2026 Aug 20 (Jul 08-07) beats dormition-fast' },
+    { date: new Date(2026, 11, 5), expected: 'afterfeast',    label: '2026 Dec 5 (Jul 11-22) beats nativity-fast' },
+    // Ascension nday 39 stays great-feast; 40…47 are afterfeast; 48 is ordinary.
+    { date: new Date(2026, 4, 21), expected: 'great-feast',   label: '2026 Ascension (nday 39)' },
+    { date: new Date(2026, 4, 22), expected: 'afterfeast',    label: '2026 nday 40 afterfeast of Ascension' },
+    { date: new Date(2026, 4, 29), expected: 'afterfeast',    label: '2026 nday 47 отдание Вознесения' },
+    { date: new Date(2026, 4, 30), expected: 'ordinary',      label: '2026 nday 48 ordinary' },
+    // отдание Пасхи = nday 38; nday 37 is left ordinary (Ponomar labels no Paschal afterfeast).
+    { date: new Date(2026, 4, 20), expected: 'afterfeast',    label: '2026 nday 38 отдание Пасхи' },
+    { date: new Date(2026, 4, 19), expected: 'ordinary',      label: '2026 nday 37 ordinary' },
+    // Сретение 2026: Julian 02-02 = Greg Feb 15 = nday -56, so the period ends at nday -52 = Feb 19.
+    { date: new Date(2026, 1, 16), expected: 'afterfeast',    label: '2026 Feb 16 попразднство Сретения' },
+    { date: new Date(2026, 1, 19), expected: 'afterfeast',    label: '2026 Feb 19 отдание Сретения' },
+    { date: new Date(2026, 1, 20), expected: 'ordinary',      label: '2026 Feb 20 after отдание Сретения' },
   ];
   var passed = 0, failed = 0;
   var { getPeriod } = module.exports;

@@ -8,7 +8,7 @@
 {% ornament "library-home" %}
 {{ renderTitle(title) }}
 
-{{ julianDate(show=showJulianDate, full=true) }}
+{{ julianDate(show=showJulianDate, full=true, anchors=(collections.all | typikonAnchors)) }}
 
 <nav class="homepage-nav">
     {{ content | safe }}

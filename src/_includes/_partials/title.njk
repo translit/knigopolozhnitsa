@@ -1,3 +1,3 @@
-{% macro title(title) %}
-<h1>{{ title | safe }}</h1>
+{% macro title(title, mark) %}
+<h1>{{ title | safe }}{{ mark | safe }}</h1>
 {% endmacro %}

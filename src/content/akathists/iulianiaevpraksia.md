@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Иулиании и Евпраксии Московским"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

@@ -408,6 +408,77 @@
     return GREAT_FEASTS_FIXED[mm + '-' + dd] || '';
   }
 
+  /*
+   * ===== TYPIKON DAY LINKS =====
+   * The homepage embeds {id: url} for the day anchors placed in the Typikon
+   * (see the typikonAnchors filter in .eleventy.js). Ids name a day:
+   *   men-MM-DD  Menologion, Julian date
+   *   tri-N      Triodion, N days before Pascha (tri-70 … tri-1)
+   *   pen-N      Pentecostarion, N days after Pascha (pen-0 … pen-56)
+   * The day turns at midnight, as for the date and glas lines.
+   */
+
+  let typikonMap;
+  function getTypikonMap() {
+    if (typikonMap !== undefined) return typikonMap;
+    typikonMap = null;
+    const el = document.getElementById('typikon-anchors');
+    if (el) { try { typikonMap = JSON.parse(el.textContent); } catch (e) {} }
+    return typikonMap;
+  }
+
+  // Signed day offset from Pascha → anchor id (negative = Triodion).
+  function movableId(n) {
+    return n < 0 ? 'tri-' + (-n) : 'pen-' + n;
+  }
+
+  // Resolve Typikon URLs for a date: {menologion: url|null, movable: url|null}.
+  // A movable day without an anchor of its own falls back to the nearest
+  // earlier anchor in the same week, never past its Sunday — the week's rules
+  // sit there. Menologion days are linked only by exact match.
+  function typikonUrls(date, map) {
+    map = map || getTypikonMap();
+    const out = { menologion: null, movable: null };
+    if (!map) return out;
+
+    const julianDate = gregorianToJulian(date);
+    const menId = 'men-' + String(julianDate.getMonth() + 1).padStart(2, '0') +
+                  '-' + String(julianDate.getDate()).padStart(2, '0');
+    if (map[menId]) out.menologion = map[menId] + '#' + menId;
+
+    const year = julianDate.getFullYear();
+    const ndayThis = dayDiff(julianDate, calculatePascha(year));
+    let n = null;
+    if (ndayThis >= 0 && ndayThis <= 56) {
+      n = ndayThis;
+    } else {
+      const toNext = ndayThis < 0 ? ndayThis : dayDiff(julianDate, calculatePascha(year + 1));
+      if (toNext >= -70) n = toNext;
+    }
+    if (n !== null) {
+      for (let k = 0; k <= date.getDay(); k++) {
+        const id = movableId(n - k);
+        if (map[id]) { out.movable = map[id] + '#' + id; break; }
+      }
+    }
+    return out;
+  }
+
+  // Fill container with text, linking it when url is given; prefix and suffix stay plain.
+  function setLinkedText(container, text, url, suffix, prefix) {
+    container.textContent = '';
+    if (prefix) container.appendChild(document.createTextNode(prefix));
+    if (url) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.textContent = text;
+      container.appendChild(a);
+    } else {
+      container.appendChild(document.createTextNode(text));
+    }
+    if (suffix) container.appendChild(document.createTextNode(suffix));
+  }
+
   /**
    * Render a week info descriptor to a display string
    */
@@ -440,7 +511,9 @@
     const dayNumeral = arabicToCU(julianDate.getDate());
     const monthName  = monthNames[julianDate.getMonth()];
 
-    container.textContent = dayName + ', ' + monthName + '\u00A0' + dayNumeral + '.';
+    // Only the date is linked: the Menologion is keyed by date, not weekday.
+    setLinkedText(container, monthName + '\u00A0' + dayNumeral,
+                  typikonUrls(today).menologion, '.', dayName + ', ');
   }
 
   /**
@@ -456,11 +529,11 @@
     const tone     = calculateTone(today);
     const glasStr  = tone !== null ? toneToSlavonic(tone) : '';
 
-    let text = weekStr;
-    if (glasStr) text += '. ' + glasStr;
-    if (text) text += '.';
+    let suffix = '';
+    if (glasStr) suffix += '. ' + glasStr;
+    if (weekStr || glasStr) suffix += '.';
 
-    container.textContent = text;
+    setLinkedText(container, weekStr, weekStr ? typikonUrls(today).movable : null, suffix);
   }
 
   /**
@@ -497,32 +570,90 @@
   // Gospel book key → zachalo anchor prefix
   const GOSPEL_PFX = { Mt: 'mtz', Mk: 'mkz', Lk: 'lkz', Jn: 'jnz' };
 
-  // Resolve the movable-cycle lectionary entry for a given date.
-  // Returns {a: {r, p}, g: {r, p}} or null when no TSV row covers this day.
-  function resolveMovableReadings(date, lectData) {
-    const julianDate = gregorianToJulian(date);
-    const year = julianDate.getFullYear();
-    const prevPascha = calculatePascha(year - 1);
-    const thisPascha = calculatePascha(year);
-    const nextPascha = calculatePascha(year + 1);
-    const ndayThis = dayDiff(julianDate, thisPascha);
-    const ndayNext = dayDiff(julianDate, nextPascha);
-    let nday;
-    if (ndayThis >= 0) {
-      nday = ndayNext >= -70 ? ndayNext : ndayThis;
-    } else if (ndayThis >= -70) {
-      nday = ndayThis;
-    } else {
-      nday = dayDiff(julianDate, prevPascha);
-    }
-    // Post-Pentecost sedmitsas run Mon–Sun starting from Spirit Monday (nday=50).
-    // floor(nday/7)-7 gives effweek=0 for both Pentecost Sunday (nday=49) AND
-    // Spirit Monday (nday=50), so use a split formula:
-    const effweek = nday >= 50
+  // Post-Pentecost sedmitsas run Mon–Sun starting from Spirit Monday (nday=50).
+  // floor(nday/7)-7 gives effweek=0 for both Pentecost Sunday (nday=49) AND
+  // Spirit Monday (nday=50), so use a split formula:
+  function effweekOf(nday) {
+    return nday >= 50
       ? Math.floor((nday - 50) / 7) + 1
       : Math.floor(nday / 7) - 7;
+  }
+
+  // Which week's зачала are actually read in week `effweek`.
+  //
+  // lectionary.json is the plain indicator: it numbers зачала by week after
+  // Pentecost and knows nothing of the two adjustments the Typikon requires —
+  // the Воздвиженская отступка/преступка in September (the Lukan ряд must
+  // begin the Monday after Неделя по Воздвижении, not at a fixed distance
+  // from Pascha) and the Крещенская отступка in January. reading_order.json
+  // holds that mapping, distilled from Andreev's tables; see
+  // scripts/build_reading_order.js.
+  //
+  // Returns [apostleWeek, gospelWeek]; 0 means the day has only feast зачала,
+  // which belong to the fixed cycle and are not in our data.
+  function readingWeeks(orderData, paschaJulian, nextPascha, effweek, dow) {
+    if (!orderData || !orderData.v) return [effweek, effweek];
+    const md = String(paschaJulian.getMonth() + 1).padStart(2, '0') + '-' +
+               String(paschaJulian.getDate()).padStart(2, '0');
+    // Неделя о мытаре и фарисее is next Pascha minus 70 days; its week index
+    // picks the variant among the tables sharing this Pascha date.
+    const mytar = effweekOf(dayDiff(nextPascha, paschaJulian) - 70);
+    let variant = null;
+    for (let i = 0; i < orderData.v.length; i++) {
+      if (orderData.v[i].p === md && orderData.v[i].m === mytar) { variant = orderData.v[i]; break; }
+    }
+    const row = variant && variant.r && variant.r[effweek];
+    // Rows that simply read their own week are omitted from the data.
+    if (!row) return [effweek, effweek];
+    const col = dow === 0 ? 4 : (dow === 6 ? 2 : 0);
+    // Negative marks a ряд reading that may be omitted for a menaion memory;
+    // with no sanctorale of our own we always show it. A zero is a feast-only
+    // cell, reported as null — week 0 is a real week (Pentecost Sunday), so the
+    // caller must not test these for truthiness.
+    return [Math.abs(row[col]) || null, Math.abs(row[col + 1]) || null];
+  }
+
+  // Resolve the movable-cycle lectionary entry for a given date.
+  // Returns {a: {r, p}, g: {r, p}} or null when no row covers this day.
+  function resolveMovableReadings(date, lectData, orderData) {
+    const julianDate = gregorianToJulian(date);
+    const year = julianDate.getFullYear();
+    const ndayThis = dayDiff(julianDate, calculatePascha(year));
+    // The two Paschas this day sits between.
+    const comingYear = ndayThis < 0 ? year : year + 1;
+    const coming = calculatePascha(comingYear);
+    const pastYear = comingYear - 1;
+    const past = calculatePascha(pastYear);
+    const toNext = dayDiff(julianDate, coming);   // always negative
+
     const dow = date.getDay(); // 0 = Sunday (Ponomar convention)
-    return lectData.movable[effweek + ':' + dow] || null;
+    let nday, pascha, paschaYear, preLent = 0;
+    if (toNext >= -48) {
+      // Lent and Holy Week: counted backwards from the coming Pascha, in
+      // Sunday-first blocks, which is how lectionary.json keys them.
+      nday = toNext; pascha = coming; paschaYear = comingYear;
+    } else if (toNext >= -69) {
+      // The three pre-Lent weeks. Andreev's tables stop at Неделя о мытаре и
+      // фарисее, so there is no reading order to consult: the indicator's own
+      // rows 34–36 apply, in Mon–Sun blocks closing on Неделя о блудном сыне
+      // (toNext -63), Мясопустная (-56) and Сыропустная (-49). Confirmed
+      // against azbyka for 08, 15 and 22.02.2026.
+      preLent = 34 + Math.floor((toNext + 69) / 7);
+      nday = dayDiff(julianDate, past); pascha = past; paschaYear = pastYear;
+    } else {
+      nday = dayDiff(julianDate, past); pascha = past; paschaYear = pastYear;
+    }
+    const effweek = effweekOf(nday);
+    const weeks = preLent
+      ? [preLent, preLent]
+      : readingWeeks(orderData, pascha, calculatePascha(paschaYear + 1), effweek, dow);
+
+    const aRow = weeks[0] !== null ? lectData.movable[weeks[0] + ':' + dow] : null;
+    const gRow = weeks[1] !== null ? lectData.movable[weeks[1] + ':' + dow] : null;
+    const entry = {};
+    if (aRow && aRow.a) entry.a = aRow.a;
+    if (gRow && gRow.g) entry.g = gRow.g;
+    return (entry.a || entry.g) ? entry : null;
   }
 
   // Returns the URL for a reading object {r, p}, or null if zachalo not found locally.
@@ -570,10 +701,10 @@
 
 
   // Populate #daily-readings with today's movable-cycle readings.
-  function updateReadingsDisplay(lectData, zachData) {
+  function updateReadingsDisplay(lectData, zachData, orderData) {
     const container = document.getElementById('daily-readings');
     if (!container) return;
-    const entry = resolveMovableReadings(new Date(), lectData);
+    const entry = resolveMovableReadings(new Date(), lectData, orderData);
     if (!entry) { container.textContent = ''; return; }
     const parts = [];
     if (entry.a && entry.a.p) parts.push(buildReadingHtml(entry.a, zachData));
@@ -591,7 +722,8 @@
       Promise.all([
         fetch('/assets/data/lectionary.json').then(function(r) { return r.json(); }),
         fetch('/assets/data/zachala.json').then(function(r) { return r.json(); }),
-      ]).then(function(d) { updateReadingsDisplay(d[0], d[1]); })
+        fetch('/assets/data/reading_order.json').then(function(r) { return r.json(); }),
+      ]).then(function(d) { updateReadingsDisplay(d[0], d[1], d[2]); })
         .catch(function() {});
     }
   }
@@ -609,14 +741,21 @@
     const d = await Promise.all([
       fetch('/assets/data/lectionary.json').then(function(r) { return r.json(); }),
       fetch('/assets/data/zachala.json').then(function(r) { return r.json(); }),
+      fetch('/assets/data/reading_order.json').then(function(r) { return r.json(); }),
     ]);
-    const entry = resolveMovableReadings(today, d[0]);
+    const entry = resolveMovableReadings(today, d[0], d[2]);
     if (!entry) return { apostle: null, gospel: null };
     return {
       apostle: entry.a && entry.a.p ? buildReadingUrl(entry.a, d[1]) : null,
       gospel:  entry.g && entry.g.p ? buildReadingUrl(entry.g, d[1]) : null,
     };
   }
-  window.kpToday = { getTodayReadingUrls: getTodayReadingUrls };
+  window.kpToday = {
+    getTodayReadingUrls: getTodayReadingUrls,
+    // Exposed so the reading order can be checked for arbitrary dates.
+    resolveMovableReadings: resolveMovableReadings,
+    // Typikon day links for an arbitrary date (map optional on the homepage).
+    typikonUrls: typikonUrls,
+  };
 
 })();

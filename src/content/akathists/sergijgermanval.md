@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Сергию и Герману Валаамским"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

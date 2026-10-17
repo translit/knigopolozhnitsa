@@ -66,20 +66,20 @@
             <div class="nav-grid">
                 {% if chapterNav.previous %}
                 <a href="{{ chapterNav.previous.url }}" class="nav-button nav-prev" rel="prev" aria-label="Go to previous chapter">
-                    ‹
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 6 11 16l10 10"/></svg>
                 </a>
                 {% else %}
-                <div class="nav-button nav-disabled">
-                    ‹
+                <div class="nav-button nav-disabled" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 6 11 16l10 10"/></svg>
                 </div>
                 {% endif %}
                 {% if chapterNav.next %}
                 <a href="{{ chapterNav.next.url }}" class="nav-button nav-next" rel="next" aria-label="Go to next chapter">
-                    ›
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 6l10 10-10 10"/></svg>
                 </a>
                 {% else %}
-                <div class="nav-button nav-disabled">
-                    ›
+                <div class="nav-button nav-disabled" aria-hidden="true">
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 6l10 10-10 10"/></svg>
                 </div>
                 {% endif %}
             </div>

@@ -1,9 +1,9 @@
 ---
-title: "<span class=\"display\">Акафист</span><br>Киево-Печерским святым."
+title: "<span class=\"display\">Акафист</span><br>Киево‐Печерским святым."
 navigation:
   key: akathists-kievlavra
   parent: akathists
-  title: "Акафист Киево-Печерским святым"
+  title: "Акафист Киево‐Печерским святым"
 type: "akathist"
 ---
 

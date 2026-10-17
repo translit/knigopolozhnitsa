@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист семи отрокам Ефесским"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

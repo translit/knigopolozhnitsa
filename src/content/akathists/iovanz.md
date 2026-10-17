@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Иову Анзерскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Александру Пересвету и Андрею Ослябе"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

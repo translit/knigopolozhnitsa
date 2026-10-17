@@ -1,9 +1,9 @@
 ---
-title: "<span class=\"display\">Акафист</span><br>иконе «Знамение» (Курская-Коренная)."
+title: "<span class=\"display\">Акафист</span><br>иконе «Знамение» (Курская‐Коренная)."
 navigation:
   key: akathists-znameniekursk
   parent: akathists
-  title: "Акафист иконе «Знамение» (Курская-Коренная)"
+  title: "Акафист иконе «Знамение» (Курская‐Коренная)"
 type: "akathist"
 ---
 

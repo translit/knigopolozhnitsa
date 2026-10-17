@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Илариону Верейскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

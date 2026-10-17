@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Макарию Московскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

@@ -1,9 +1,9 @@
 ---
-title: "<span class=\"display\">Акафист</span><br>иконе «Киево-Печерская»."
+title: "<span class=\"display\">Акафист</span><br>иконе «Киево‐Печерская»."
 navigation:
   key: akathists-kievpechersk
   parent: akathists
-  title: "Акафист иконе «Киево-Печерская»"
+  title: "Акафист иконе «Киево‐Печерская»"
 type: "akathist"
 ---
 

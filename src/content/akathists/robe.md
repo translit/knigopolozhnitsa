@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Положению ризы Пресвятой Богородицы"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

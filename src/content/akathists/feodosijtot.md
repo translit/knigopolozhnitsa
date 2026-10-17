@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Феодосию Тотемскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

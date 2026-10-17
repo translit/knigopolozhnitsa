@@ -31,6 +31,10 @@
           svg = svg.replace(/<\?xml[^?]*\?>\s*/g, '').replace(/<!DOCTYPE[^>]*>\s*/g, '');
           el.innerHTML = svg;
           el.dataset.file = match.file;
+          // Candidates may carry their own size (heavy dividers use d1); fall back to
+          // the role default the build emitted. reveal() re-adds orn-ready after this.
+          var size = match.size || el.dataset.defaultSize;
+          el.className = 'ornament' + (size ? ' ornament-' + size : '');
           reveal(el);
         })
         .catch(function () {

@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист иконе «Колочская»"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Константину Богородскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

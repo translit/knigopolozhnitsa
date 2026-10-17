@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Герману Аляскинскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:

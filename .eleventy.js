@@ -1,9 +1,11 @@
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { liturgicalTermsRegex, numberedBookPartsRegex, NUMERAL_PATTERN } = require('./lib/cu_liturgical');
+const { liturgicalTermsRegex, liturgicalTermsRegexRedInitial, numberedBookPartsRegex, NUMERAL_PATTERN } = require('./lib/cu_liturgical');
+const { isCanonicalNumeral } = require('./lib/cu_numerals');
 const { getPeriod } = require('./src/assets/js/liturgical-period.js');
 const registerTodayRedirectors = require('./eleventy/today_redirectors');
+const registerServiceButton = require('./eleventy/service_button');
 
 const decodeEntities = (html) => html
   .replace(/&nbsp;/g, " ")
@@ -18,16 +20,30 @@ const stripTags = (html) =>
   decodeEntities(html.replace(/<[^>]+>/g, "")).normalize("NFC").trim();
 
 const CONTENT_ROOT = path.join(__dirname, 'src/content');
-const ORNAMENT_SIZES = new Set(['xsmall', 'small', 'medium', 'l0', 'l1', 'l2', 'l3']);
+const ORNAMENT_SIZES = new Set(['xsmall', 'small', 'medium', 'l0', 'l1', 'l2', 'l3', 'd1']);
 
 // Precompiled regexes for slavonicNumeralNoBreak — built once at module scope
 const _LT  = liturgicalTermsRegex();
+const _LTR = liturgicalTermsRegexRedInitial();   // same terms, initial wrapped in <red>
 const _NP  = NUMERAL_PATTERN;
 const _BP  = numberedBookPartsRegex();
 const RX_TERM_NUM          = new RegExp(`(^|\\s|>|\\[)(${_LT})\\s+(${_NP})`, 'gi');
 const RX_TERM_COMMA_NUM    = new RegExp(`(^|\\s|>|\\[)(${_LT}),\\s+(${_NP})`, 'gi');
 const RX_TERM_LINKED       = new RegExp(`(^|\\s|>|\\[)(${_LT})\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
 const RX_TERM_COMMA_LINKED = new RegExp(`(^|\\s|>|\\[)(${_LT}),\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
+// Same four rules again for labels that open with a red initial — <red>П</red>ѣ́снь а҃ —
+// where the tag splits the term and the plain rules above cannot see it.
+const RX_TERM_NUM_RED          = new RegExp(`(^|\\s|>|\\[)(${_LTR})\\s+(${_NP})`, 'gi');
+const RX_TERM_COMMA_NUM_RED    = new RegExp(`(^|\\s|>|\\[)(${_LTR}),\\s+(${_NP})`, 'gi');
+const RX_TERM_LINKED_RED       = new RegExp(`(^|\\s|>|\\[)(${_LTR})\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
+const RX_TERM_COMMA_LINKED_RED = new RegExp(`(^|\\s|>|\\[)(${_LTR}),\\s+(<a [^>]*>${_NP}<\\/a>)`, 'gim');
+// NUMERAL_PATTERN also matches nomina sacra — Бг҃ъ, нб҃сѝ, бл҃годаре́нїѧ all carry a
+// titlo — so the red-initial rules below check the token really parses as a numeral
+// before gluing it to its label. (The plain rules above predate this and still glue
+// nomina sacra: ~4700 places, harmless but wrong.)
+const nbspIfNumeral = (sep) => (all, lead, term, num) =>
+  isCanonicalNumeral(num.replace(/[.,:;]+$/, '')) ? `${lead}${term}${sep}&nbsp;${num}` : all;
+
 const RX_NUM_WEEK          = new RegExp(`(^|\\s)(${_NP}) ([НнСс]ед\\S*)`, 'gm');
 const RX_NUM_BOOK          = new RegExp(`(^|\\s|>|\\[)(${_NP}) (${_BP})`, 'g');
 
@@ -147,6 +163,40 @@ module.exports = function(eleventyConfig) {
 
   eleventyConfig.addWatchTarget("./src/assets/ornaments/manifest.json");
 
+  // Day anchors in the Typikon, for the homepage's "office of the day" links.
+  // Ids name a day, not a place: men-MM-DD (Julian Menologion day), tri-N
+  // (N days before Pascha), pen-N (N days after Pascha). Read from source so
+  // retagging the markers around them, or renumbering files, needs no change here.
+  eleventyConfig.addFilter("typikonAnchors", function(collection) {
+    const map = {};
+    for (const item of collection) {
+      if (!/[\\/]service[\\/]typikon[\\/][^\\/]+\.md$/.test(item.inputPath)) continue;
+      const src = fs.readFileSync(item.inputPath, 'utf8');
+      for (const m of src.matchAll(/<a id="((?:men|tri|pen)-[0-9-]+)"/g)) {
+        if (map[m[1]]) console.warn(`[typikonAnchors] duplicate id ${m[1]} in ${item.inputPath}`);
+        else map[m[1]] = item.url;
+      }
+    }
+    const missing = [];
+    for (let mo = 1; mo <= 12; mo++) {
+      const days = new Date(Date.UTC(2000, mo, 0)).getUTCDate(); // 2000 is leap: Feb has 29
+      for (let d = 1; d <= days; d++) {
+        const id = `men-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        if (!map[id]) missing.push(id);
+      }
+    }
+    // Movable days with a section of their own, as placed in the Typikon.
+    // Days not listed fall back to an earlier anchor in their week on purpose.
+    // Adding or moving an anchor means updating these lists too.
+    const TRI = [70,63,57,56,55,54,53,52,51,50,49,48,46,44,43,42,41,37,36,35,30,29,28,26,25,23,22,21,18,17,16,15,14,9,8,7,6,5,4,3,2,1];
+    const PEN = [0,1,2,3,4,5,6,7,8,12,13,14,15,19,20,21,22,23,24,25,26,27,28,29,30,31,32,34,35,36,37,38,39,40,41,42,43,46,47,49,50,54,56];
+    for (const id of [...TRI.map((n) => `tri-${n}`), ...PEN.map((n) => `pen-${n}`)]) {
+      if (!map[id]) missing.push(id);
+    }
+    if (missing.length) console.warn(`[typikonAnchors] ${missing.length} Typikon day anchors missing: ${missing.slice(0, 10).join(' ')}${missing.length > 10 ? ' …' : ''}`);
+    return map;
+  });
+
   // Add filter for numerical sorting (for dynamic subsection indexes)
   eleventyConfig.addFilter("sortByNumber", function(collection) {
     return collection.sort((a, b) => {
@@ -259,10 +309,11 @@ module.exports = function(eleventyConfig) {
   //        {% ornament "category/file" %} (direct path, for power use)
   // Sizes: "xsmall" (3rem box), "small" (5rem box), "medium" (8rem box) for inline ornaments and tailpieces;
   //        "l0"/"l1"/"l2"/"l3" are the headpiece ladder (24/22/20/18rem, fixed across desktop and tablet);
+  //        "d1" (16rem) is for heavy dividers, set per candidate in manifest.json;
   //        or omit for default (25rem cap, dividers only).
-  // Size resolution order: explicit arg → manifest role.size → none.
+  // Size resolution order: chosen candidate.size → explicit arg → manifest role.size → none.
   // Each size is a square bounding box: wide SVGs hit the width cap, tall SVGs hit the height cap.
-  // manifest.json maps logical role names to { category, size?, candidates: [{file, period?}, ...] }.
+  // manifest.json maps logical role names to { category, size?, candidates: [{file, period?, size?}, ...] }.
   // When candidates.length > 1, data-* attrs are emitted for ornament-rotation.js to swap at runtime.
   eleventyConfig.addShortcode("ornament", function(name, size) {
     const manifest = loadOrnamentManifest();
@@ -271,6 +322,7 @@ module.exports = function(eleventyConfig) {
     let candidates = null;
     let category = null;
     let chosenFile = null;
+    let chosenCandidate = null;
     const role = manifest.roles[name];
     if (role) {
       candidates = role.candidates;
@@ -279,6 +331,7 @@ module.exports = function(eleventyConfig) {
       // ornament-rotation.js swaps in the seasonal ornament at view time.
       const chosen = candidates.find(c => !c.period)
                   || candidates[0];
+      chosenCandidate = chosen;
       chosenFile = chosen.file;
       svgRelPath = `${category}/${chosenFile}`;
     } else {
@@ -286,7 +339,10 @@ module.exports = function(eleventyConfig) {
     }
     const svgPath = path.join(__dirname, 'src/assets/ornaments', `${svgRelPath}.svg`);
 
-    const effectiveSize = size || (role && role.size);
+    // Role-level default, used for the markup when the chosen candidate carries no size
+    // and handed to ornament-rotation.js so it can restore the default after a swap.
+    const defaultSize = size || (role && role.size);
+    const effectiveSize = (chosenCandidate && chosenCandidate.size) || defaultSize;
     let classes = 'ornament';
     if (ORNAMENT_SIZES.has(effectiveSize)) {
       classes += ` ornament-${effectiveSize}`;
@@ -299,7 +355,9 @@ module.exports = function(eleventyConfig) {
       let dataAttrs = '';
       if (candidates && candidates.length > 1) {
         // data-file = the file already inlined; client early-returns if it still matches.
-        dataAttrs = ` data-file="${chosenFile}" data-category="${category}" data-candidates='${JSON.stringify(candidates)}'`;
+        dataAttrs = ` data-file="${chosenFile}" data-category="${category}"`
+                  + (defaultSize ? ` data-default-size="${defaultSize}"` : '')
+                  + ` data-candidates='${JSON.stringify(candidates)}'`;
       }
       return `<div class="${classes}"${dataAttrs}>${svg}</div>`;
     } catch (error) {
@@ -422,6 +480,13 @@ module.exports = function(eleventyConfig) {
       content = content.replace(RX_TERM_LINKED, '$1$2&nbsp;$3');
       content = content.replace(RX_TERM_COMMA_LINKED, '$1$2,&nbsp;$3');
 
+      content = content.replace(RX_TERM_NUM_RED, nbspIfNumeral(''));
+      content = content.replace(RX_TERM_COMMA_NUM_RED, nbspIfNumeral(','));
+      content = content.replace(RX_TERM_LINKED_RED, (all, lead, term, link) =>
+        isCanonicalNumeral(link.replace(/<[^>]*>/g, '').replace(/[.,:;]+$/, '')) ? `${lead}${term}&nbsp;${link}` : all);
+      content = content.replace(RX_TERM_COMMA_LINKED_RED, (all, lead, term, link) =>
+        isCanonicalNumeral(link.replace(/<[^>]*>/g, '').replace(/[.,:;]+$/, '')) ? `${lead}${term},&nbsp;${link}` : all);
+
       // Non-breaking space after inline rubric verse/chapter numbers (e.g. <rubric class="inline vn" id="...">ѳ҃:</rubric>)
       content = content.replace(/(<rubric class="inline[^"]*"[^>]*>[а-ѱѡцѳѻꙋ][҃҂][^<]*:<\/rubric>) /g, '$1&nbsp;');
 
@@ -534,6 +599,9 @@ module.exports = function(eleventyConfig) {
 
     return content;
   });
+
+  // Last transform: injects JSON that earlier transforms must not rewrite.
+  registerServiceButton(eleventyConfig);
 
   // Basic configuration
   return {

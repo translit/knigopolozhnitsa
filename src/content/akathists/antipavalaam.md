@@ -5,6 +5,7 @@ navigation:
   parent: akathists
   title: "Акафист Антипе Валаамскому"
 type: "akathist"
+approved: true
 ---
 
 ## Конда́къ а҃:
